@@ -10,6 +10,7 @@ export default defineTool({
   inputSchema: {
     limit: z.number().int().describe("How many sessions to return (1-50, default 10)."),
   },
+  outputSchema: { sessions: z.array(z.unknown()) },
   annotations: { readOnlyHint: true, idempotentHint: true },
   handler: async ({ limit }) => {
     const take = Math.min(50, Math.max(1, Math.round(limit || 10)));

@@ -17,6 +17,7 @@ export default defineTool({
       .trim()
       .describe("The familiar system to map onto, e.g. 'Computer logic gates'."),
   },
+  outputSchema: { session_id: z.string().nullable(), concept_map: z.unknown() },
   annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: true },
   handler: async ({ raw_concept, cognitive_anchor }) => {
     if (!raw_concept || !cognitive_anchor) {

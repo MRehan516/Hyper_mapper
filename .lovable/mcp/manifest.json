@@ -39,7 +39,27 @@
             "cognitive_anchor"
           ]
         },
-        "outputSchema": null
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "session_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "concept_map": {}
+          },
+          "required": [
+            "session_id",
+            "concept_map"
+          ]
+        }
       },
       {
         "name": "list_mapping_sessions",
@@ -64,7 +84,19 @@
             "limit"
           ]
         },
-        "outputSchema": null
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "sessions": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          "required": [
+            "sessions"
+          ]
+        }
       },
       {
         "name": "submit_tester_feedback",
@@ -112,7 +144,18 @@
             "notes"
           ]
         },
-        "outputSchema": null
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ok"
+          ]
+        }
       }
     ]
   }

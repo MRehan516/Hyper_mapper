@@ -18,6 +18,7 @@ export default defineTool({
       .describe("How much cognitive friction was reduced vs. standard textbooks, 1 to 5."),
     notes: z.string().trim().describe("Qualitative feedback and suggestions."),
   },
+  outputSchema: { ok: z.boolean() },
   annotations: { readOnlyHint: false, destructiveHint: false },
   handler: async ({ tester_type, clarity_rating, friction_rating, notes }) => {
     const clamp = (value: number) => Math.min(5, Math.max(1, Math.round(value)));
@@ -34,6 +35,7 @@ export default defineTool({
 
     return {
       content: [{ type: "text", text: "Thank you for validating our design! Feedback recorded." }],
+      structuredContent: { ok: true },
     };
   },
 });
