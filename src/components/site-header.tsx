@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Brain, Moon, Sun, MessageSquareHeart } from "lucide-react";
+import { Brain, Moon, Sun, MessageSquareHeart, Home } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 
@@ -24,9 +24,14 @@ export function SiteHeader() {
         </Link>
 
         <div className="ml-auto flex items-center gap-3">
-          <span className="hidden rounded-full bg-primary-soft px-4 py-2 text-xs font-semibold text-accent-foreground sm:inline-block">
+          <Link
+            to="/"
+            className="hidden items-center gap-2 rounded-full bg-primary-soft px-4 py-2 text-xs font-semibold text-accent-foreground transition-colors hover:bg-primary/20 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring sm:inline-flex"
+            aria-label="Return to the concept mapper home page"
+          >
+            <Home className="size-3.5" aria-hidden="true" />
             Designed &amp; Tested with NNEA Self-Advocates
-          </span>
+          </Link>
           <Button asChild variant="ghost" className="min-h-11 gap-2">
             <Link to="/tester-feedback">
               <MessageSquareHeart className="size-4" aria-hidden="true" />
@@ -54,9 +59,14 @@ export function SiteHeader() {
           </Button>
         </div>
 
-        <span className="rounded-full bg-primary-soft px-4 py-2 text-xs font-semibold text-accent-foreground sm:hidden">
+        <Link
+          to="/"
+          className="flex items-center gap-2 rounded-full bg-primary-soft px-4 py-2 text-xs font-semibold text-accent-foreground transition-colors hover:bg-primary/20 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring sm:hidden"
+          aria-label="Return to the concept mapper home page"
+        >
+          <Home className="size-3.5" aria-hidden="true" />
           Designed &amp; Tested with NNEA Self-Advocates
-        </span>
+        </Link>
       </div>
     </header>
   );
