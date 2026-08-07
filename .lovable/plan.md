@@ -4,13 +4,11 @@ An accessibility-first, no-login learning tool that translates K-12 concepts int
 
 ## What gets built
 
-**1. Backend (Lovable Cloud)**
-- Enable Cloud (database + serverless functions, no accounts, no login screens).
-- Tables:
-  - `mapping_sessions`: raw_concept, cognitive_anchor, structured_output (JSON), comprehension_score, created_at
-  - `tester_feedback`: tester_identifier, clarity_rating, friction_rating, notes, created_at
-  - Both are anonymous-write/no-PII, so public insert/update policies are used deliberately; reads stay closed.
-- AI mapping function `map-concept`: takes `{ raw_concept, cognitive_anchor }`, returns `{ error: false, data: { concept_summary, mappings, comprehension_check } }` using the built-in AI gateway (Gemini, no API key needed). Real errors are returned as-is — never mocked.
+**1. Backend: your external Supabase (no Lovable Cloud, no built-in AI)**
+- No Cloud backend is created, no AI gateway is used, no tables or functions are provisioned. Your existing `mapping_sessions`, `tester_feedback`, and `map-concept` Edge Function are used as-is.
+- Add `@supabase/supabase-js` and create a single browser client at `src/lib/supabase.ts` reading `import.meta.env.VITE_SUPABASE_URL` and `import.meta.env.VITE_SUPABASE_ANON_KEY` (values supplied by you via the Integrations panel).
+- If those values are missing at runtime, the UI shows the same honest error card rather than mock data.
+
 
 **2. Learner Dashboard (`/`)**
 - Header: "Hyper-Mapper" logo/title, subtitle, teal "Designed & Tested with NNEA Self-Advocates" badge, high-contrast dark-mode toggle (persisted locally).
@@ -29,6 +27,8 @@ An accessibility-first, no-login learning tool that translates K-12 concepts int
 
 ## Technical notes
 - Stack is TanStack Start + Tailwind v4 + shadcn/Lucide. Routes: `src/routes/index.tsx` (replaces placeholder) and `src/routes/tester-feedback.tsx`.
-- AI generation is called exactly as specified via `supabase.functions.invoke('map-concept', { body: { raw_concept, cognitive_anchor } })`, reading the nested payload from `data.data`. Note: on this stack a server function would be the more native choice, but the plan follows your specified edge-function contract.
-- DB writes go through the browser Supabase client: insert on generation (id kept in state), update `comprehension_score` on quiz completion, insert on feedback submit.
+- All Supabase calls run client-side against your external instance via `@supabase/supabase-js` — no server functions, no `@/integrations/supabase/*` (that path only exists with Cloud).
+- Mapping call is exactly `supabase.functions.invoke('map-concept', { body: { raw_concept, cognitive_anchor } })`, reading the nested payload from `data.data`.
+- DB writes: insert into `mapping_sessions` on generation (row id kept in state), update `comprehension_score` on quiz completion, insert into `tester_feedback` on submit.
 - No auth middleware, no `_authenticated` routes, no session state.
+
