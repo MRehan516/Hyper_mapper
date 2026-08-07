@@ -27,6 +27,8 @@ An accessibility-first, no-login learning tool that translates K-12 concepts int
 
 ## Technical notes
 - Stack is TanStack Start + Tailwind v4 + shadcn/Lucide. Routes: `src/routes/index.tsx` (replaces placeholder) and `src/routes/tester-feedback.tsx`.
-- AI generation is called exactly as specified via `supabase.functions.invoke('map-concept', { body: { raw_concept, cognitive_anchor } })`, reading the nested payload from `data.data`. Note: on this stack a server function would be the more native choice, but the plan follows your specified edge-function contract.
-- DB writes go through the browser Supabase client: insert on generation (id kept in state), update `comprehension_score` on quiz completion, insert on feedback submit.
+- All Supabase calls run client-side against your external instance via `@supabase/supabase-js` — no server functions, no `@/integrations/supabase/*` (that path only exists with Cloud).
+- Mapping call is exactly `supabase.functions.invoke('map-concept', { body: { raw_concept, cognitive_anchor } })`, reading the nested payload from `data.data`.
+- DB writes: insert into `mapping_sessions` on generation (row id kept in state), update `comprehension_score` on quiz completion, insert into `tester_feedback` on submit.
 - No auth middleware, no `_authenticated` routes, no session state.
+
