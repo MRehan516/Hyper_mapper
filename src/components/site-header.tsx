@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Brain, Moon, Sun, MessageSquareHeart } from "lucide-react";
+import { Brain, Moon, Sun, MessageSquareHeart, Home } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 
