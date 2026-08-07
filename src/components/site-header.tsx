@@ -1,0 +1,63 @@
+import { Link } from "@tanstack/react-router";
+import { Brain, Moon, Sun, MessageSquareHeart } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
+import { Button } from "@/components/ui/button";
+
+export function SiteHeader() {
+  const { isDark, toggle } = useTheme();
+
+  return (
+    <header className="border-b border-border bg-card/70 backdrop-blur">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-4 px-5 py-5">
+        <Link to="/" className="flex items-center gap-3 rounded-lg">
+          <span className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+            <Brain className="size-6" aria-hidden="true" />
+          </span>
+          <span>
+            <span className="block font-display text-xl font-bold tracking-tight text-foreground">
+              Hyper-Mapper
+            </span>
+            <span className="block text-sm text-muted-foreground">
+              Translate abstract concepts into your cognitive framework
+            </span>
+          </span>
+        </Link>
+
+        <div className="ml-auto flex items-center gap-3">
+          <span className="hidden rounded-full bg-primary-soft px-4 py-2 text-xs font-semibold text-accent-foreground sm:inline-block">
+            Designed &amp; Tested with NNEA Self-Advocates
+          </span>
+          <Button asChild variant="ghost" className="min-h-11 gap-2">
+            <Link to="/tester-feedback">
+              <MessageSquareHeart className="size-4" aria-hidden="true" />
+              <span className="hidden sm:inline">Tester feedback</span>
+            </Link>
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={toggle}
+            aria-pressed={isDark}
+            aria-label={
+              isDark ? "Switch to warm light mode" : "Switch to high-contrast dark mode"
+            }
+            className="min-h-11 min-w-11 gap-2"
+          >
+            {isDark ? (
+              <Sun className="size-4" aria-hidden="true" />
+            ) : (
+              <Moon className="size-4" aria-hidden="true" />
+            )}
+            <span className="hidden md:inline">
+              {isDark ? "Light mode" : "High contrast"}
+            </span>
+          </Button>
+        </div>
+
+        <span className="rounded-full bg-primary-soft px-4 py-2 text-xs font-semibold text-accent-foreground sm:hidden">
+          Designed &amp; Tested with NNEA Self-Advocates
+        </span>
+      </div>
+    </header>
+  );
+}
