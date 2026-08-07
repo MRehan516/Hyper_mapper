@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.1",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "hyper-mapper",
+      "version": "0.1.0",
+      "title": "Hyper-Mapper"
+    },
+    "tools": [
+      {
+        "name": "map_concept",
+        "title": "Map concept to a cognitive anchor",
+        "description": "Translate a K-12 academic concept into a personalized cognitive anchor analogy (e.g. Minecraft Redstone, city transit maps, logic gates). Returns a concept summary, analogy mappings, and comprehension questions, and saves the mapping session.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "raw_concept": {
+              "type": "string",
+              "description": "The academic concept to learn, e.g. 'Photosynthesis'."
+            },
+            "cognitive_anchor": {
+              "type": "string",
+              "description": "The familiar system to map onto, e.g. 'Computer logic gates'."
+            }
+          },
+          "required": [
+            "raw_concept",
+            "cognitive_anchor"
+          ]
+        },
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "session_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "concept_map": {}
+          },
+          "required": [
+            "session_id",
+            "concept_map"
+          ]
+        }
+      },
+      {
+        "name": "list_mapping_sessions",
+        "title": "List recent mapping sessions",
+        "description": "List the most recent Hyper-Mapper concept mapping sessions, including the concept, the cognitive anchor used, and the comprehension score when a quiz was completed.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991,
+              "description": "How many sessions to return (1-50, default 10)."
+            }
+          },
+          "required": [
+            "limit"
+          ]
+        },
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "sessions": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          "required": [
+            "sessions"
+          ]
+        }
+      },
+      {
+        "name": "submit_tester_feedback",
+        "title": "Submit tester feedback",
+        "description": "Record NNEA tester feedback about Hyper-Mapper: who the tester is, how clear the analogies were, how much cognitive friction was reduced, and free-form notes.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "tester_type": {
+              "type": "string",
+              "enum": [
+                "Autistic Self-Advocate",
+                "NNEA Volunteer",
+                "Educator / Mentor",
+                "Student"
+              ],
+              "description": "Tester identifier."
+            },
+            "clarity_rating": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991,
+              "description": "How clear were the analogies, 1 to 5."
+            },
+            "friction_rating": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991,
+              "description": "How much cognitive friction was reduced vs. standard textbooks, 1 to 5."
+            },
+            "notes": {
+              "type": "string",
+              "description": "Qualitative feedback and suggestions."
+            }
+          },
+          "required": [
+            "tester_type",
+            "clarity_rating",
+            "friction_rating",
+            "notes"
+          ]
+        },
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "ok"
+          ]
+        }
+      }
+    ]
+  }
+}
