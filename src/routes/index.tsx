@@ -210,6 +210,17 @@ const formatOptions = [
   { value: "Flowchart", icon: GitBranch },
 ];
 
+const formatInstructions: Record<string, string> = {
+  "Concept Map":
+    "Generate a standard 4-step conceptual analogy mapping: each step pairs one concept element with its anchor equivalent and a clear plain-language explanation.",
+  "Story Mode":
+    "Transform the explanation into a cohesive, narrative-driven story that uses the cognitive anchor as the setting. Each mapping's explanation should read as a connected scene of one continuous story, in order.",
+  "Bullet Points":
+    "Structure the breakdown as ultra-concise, high-scannability bullet points. Keep every explanation to one or two short lines — no long paragraphs.",
+  "Flowchart":
+    "Format the steps as an explicit sequential workflow with directional logic (e.g. 'Condition A triggers State B'). Each step must clearly lead into the next.",
+};
+
 const anchorCategories: { label: string; keywords: string[] }[] = [
   { label: "Video games", keywords: ["game", "gaming", "minecraft", "redstone", "roblox", "fortnite", "console"] },
   { label: "Sports", keywords: ["sport", "soccer", "football", "basketball", "team", "coach", "match"] },
@@ -271,6 +282,7 @@ function Index() {
   const [isPrintingProfile, setIsPrintingProfile] = useState(false);
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("Dashboard");
   const [selectedFormat, setSelectedFormat] = useState("Concept Map");
+  const [resultFormat, setResultFormat] = useState("Concept Map");
   const [inputMode, setInputMode] = useState<"manual" | "paste">("manual");
   const [denseText, setDenseText] = useState("");
   const [extractNote, setExtractNote] = useState<string | null>(null);
@@ -446,8 +458,9 @@ function Index() {
     const cognitive_anchor = anchor.trim();
     const conceptText =
       raw_concept +
-      ` [Format as: ${selectedFormat}]` +
+      ` [Output format: ${selectedFormat}. ${formatInstructions[selectedFormat] ?? ""}]` +
       (sensoryPrefs.length ? ` [Formatting constraints: ${sensoryPrefs.join(", ")}]` : "");
+    setResultFormat(selectedFormat);
 
 
     const { data, error: fnError } = await supabase.functions.invoke("map-concept", {
@@ -529,7 +542,7 @@ function Index() {
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
         {activeTab === "Dashboard" ? (
-          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-3xl space-y-8">
+          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-5xl space-y-8">
         <section className="no-print overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-8 shadow-sm">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1.5 text-xs font-semibold text-accent-foreground">
             <Activity className="size-3.5" aria-hidden="true" />
@@ -626,7 +639,7 @@ function Index() {
 
 
             <div className="space-y-3">
-              <p className="text-base font-semibold text-foreground">Output format</p>
+              <p className="text-xl font-bold text-foreground">Output format</p>
               <div role="group" aria-label="Output format" className="flex flex-wrap gap-2">
                 {formatOptions.map((option) => {
                   const Icon = option.icon;
@@ -653,7 +666,7 @@ function Index() {
 
             <div className="space-y-3">
 
-              <Label htmlFor="concept" className="text-base font-semibold">
+              <Label htmlFor="concept" className="text-xl font-bold">
                 Academic Concept to Learn
               </Label>
               <Textarea
@@ -662,12 +675,12 @@ function Index() {
                 value={rawConcept}
                 onChange={(event) => setRawConcept(event.target.value)}
                 placeholder="e.g., Photosynthesis, Electromagnetism, Cell Division..."
-                className="text-base leading-relaxed"
+                className="p-5 text-2xl leading-relaxed"
               />
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="anchor" className="text-base font-semibold">
+              <Label htmlFor="anchor" className="text-xl font-bold">
                 Your Preferred Cognitive Anchor
               </Label>
               <Input
@@ -676,7 +689,7 @@ function Index() {
                 value={anchor}
                 onChange={(event) => setAnchor(event.target.value)}
                 placeholder="e.g., Computer Logic Gates, City Transit Maps, Minecraft Redstone, Music Theory..."
-                className="min-h-12 text-base"
+                className="min-h-16 p-5 text-2xl md:text-2xl"
               />
               <div
                 role="list"
@@ -738,7 +751,7 @@ function Index() {
               type="button"
               onClick={generate}
               disabled={loading}
-              className="min-h-13 w-full py-3 text-base font-semibold"
+              className="min-h-14 w-full py-4 text-xl font-bold"
             >
               {loading ? (
                 <>
@@ -781,8 +794,14 @@ function Index() {
 
             <section aria-labelledby="mappings" className="mt-10">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h2 id="mappings" className="font-display text-xl font-bold text-foreground">
-                  Analogy mapping steps
+                <h2 id="mappings" className="font-display text-2xl font-bold text-foreground">
+                  {resultFormat === "Story Mode"
+                    ? "Your story"
+                    : resultFormat === "Bullet Points"
+                      ? "Key points"
+                      : resultFormat === "Flowchart"
+                        ? "Sequential workflow"
+                        : "Analogy mapping steps"}
                 </h2>
                 <div className="flex flex-wrap items-center gap-3">
                   <Button
@@ -836,6 +855,71 @@ function Index() {
                     </Button>
                   </div>
                 </div>
+              ) : resultFormat === "Story Mode" ? (
+                <article className="print-card mt-4 rounded-2xl border border-border bg-card p-8 shadow-sm">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-accent-foreground">
+                    Story mode
+                  </p>
+                  <div className="mt-4 space-y-5">
+                    {result.mappings?.map((mapping, index) => (
+                      <p
+                        key={`${mapping.concept_element}-${index}`}
+                        className="text-xl leading-relaxed text-foreground"
+                      >
+                        <span className="font-bold">{mapping.concept_element}</span>{" "}
+                        <span className="font-semibold text-accent-foreground">
+                          ({mapping.anchor_equivalent})
+                        </span>{" "}
+                        — {mapping.explanation}
+                      </p>
+                    ))}
+                  </div>
+                </article>
+              ) : resultFormat === "Bullet Points" ? (
+                <ul className="print-card mt-4 space-y-4 rounded-2xl border border-border bg-card p-8 shadow-sm">
+                  {result.mappings?.map((mapping, index) => (
+                    <li
+                      key={`${mapping.concept_element}-${index}`}
+                      className="flex gap-3 text-lg leading-relaxed text-foreground"
+                    >
+                      <span aria-hidden="true" className="mt-1 text-primary">
+                        •
+                      </span>
+                      <span>
+                        <span className="font-bold">{mapping.concept_element}</span> ={" "}
+                        <span className="font-semibold text-accent-foreground">
+                          {mapping.anchor_equivalent}
+                        </span>
+                        <span className="block text-base text-muted-foreground">
+                          {mapping.explanation}
+                        </span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : resultFormat === "Flowchart" ? (
+                <ol className="mt-4 space-y-3">
+                  {result.mappings?.map((mapping, index) => (
+                    <li key={`${mapping.concept_element}-${index}`}>
+                      <div className="print-card rounded-2xl border-2 border-primary/40 bg-card p-6 shadow-sm">
+                        <p className="text-sm font-bold uppercase tracking-wide text-accent-foreground">
+                          Step {index + 1}
+                        </p>
+                        <h3 className="mt-2 text-xl font-bold text-foreground">
+                          {mapping.concept_element} → {mapping.anchor_equivalent}
+                        </h3>
+                        <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                          {mapping.explanation}
+                        </p>
+                      </div>
+                      {index < (result.mappings?.length ?? 0) - 1 ? (
+                        <div aria-hidden="true" className="py-2 text-center text-2xl text-primary">
+                          ↓
+                        </div>
+                      ) : null}
+                    </li>
+                  ))}
+                </ol>
               ) : (
                 <ul className="mt-4 grid gap-5 md:grid-cols-2">
                   {result.mappings?.map((mapping, index) => (
