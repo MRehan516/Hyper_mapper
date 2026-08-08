@@ -459,26 +459,34 @@ function Index() {
       <div
         className={`flex min-h-dvh w-full bg-background ${isPrintingProfile ? "printing-profile" : ""}`}
       >
-        <AppSidebar
-          deck={deck}
-          cognitiveAnchor={anchor}
-          sensoryPrefs={sensoryPrefs}
-          onExportTeacherPass={exportTeacherPass}
-        />
+        <AppSidebar activeTab={activeTab} onSelectTab={setActiveTab} />
         <SidebarInset className="bg-background">
         <SiteHeader withSidebarTrigger onOpenFeedback={() => setFeedbackOpen(true)} />
         <main className="mx-auto w-full max-w-5xl px-5 py-10">
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
+        {activeTab === "Dashboard" ? (
+          <div key="dashboard" className="animate-fade-in">
+        <section className="no-print mb-8 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-7 shadow-sm sm:p-9">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1.5 text-xs font-semibold text-accent-foreground">
+            <Activity className="size-3.5" aria-hidden="true" />
+            Cognitive Sync: Active
+          </span>
+          <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            Hyper-Mapper Core
+          </h2>
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
+            Translate any academic concept into the system your brain already knows by heart.
+          </p>
+        </section>
 
         <div className="no-print mb-6 flex flex-col items-center justify-center gap-2 rounded-lg bg-secondary/40 px-4 py-3 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
           <Brain className="size-4 shrink-0" aria-hidden="true" />
           <span>Designed for how your brain works — zero medical labels, zero diagnostic profiling required.</span>
         </div>
 
-
-
         <section
+
           aria-labelledby="step-one"
           className="no-print mx-auto w-full max-w-[700px] rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8"
         >
