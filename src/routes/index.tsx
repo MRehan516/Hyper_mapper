@@ -14,11 +14,14 @@ import {
   Clapperboard,
   ShieldCheck,
   Brain,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { ErrorCard } from "@/components/error-card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
