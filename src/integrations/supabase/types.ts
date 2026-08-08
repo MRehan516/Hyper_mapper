@@ -53,6 +53,8 @@ export type Database = {
           is_verified_tester: boolean | null
           qualitative_notes: string | null
           session_id: string | null
+          tester_email: string | null
+          tester_id: string | null
           tester_type: string
         }
         Insert: {
@@ -63,6 +65,8 @@ export type Database = {
           is_verified_tester?: boolean | null
           qualitative_notes?: string | null
           session_id?: string | null
+          tester_email?: string | null
+          tester_id?: string | null
           tester_type: string
         }
         Update: {
@@ -73,6 +77,8 @@ export type Database = {
           is_verified_tester?: boolean | null
           qualitative_notes?: string | null
           session_id?: string | null
+          tester_email?: string | null
+          tester_id?: string | null
           tester_type?: string
         }
         Relationships: [
