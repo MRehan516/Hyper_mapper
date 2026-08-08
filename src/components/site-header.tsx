@@ -5,13 +5,21 @@ import { Button } from "@/components/ui/button";
 import { InstallButton } from "@/components/install-button";
 
 
-export function SiteHeader() {
+export function SiteHeader({
+  withSidebarTrigger = false,
+  onOpenFeedback,
+}: {
+  withSidebarTrigger?: boolean;
+  onOpenFeedback?: () => void;
+} = {}) {
   const { isDark, toggle } = useTheme();
 
   return (
-    <header className="no-print border-b border-border bg-card/70 backdrop-blur">
+    <header className="no-print no-profile-print border-b border-border bg-card/70 backdrop-blur">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-4 px-5 py-5">
+        {withSidebarTrigger ? <SidebarTrigger className="min-h-11 min-w-11" /> : null}
         <Link to="/" className="flex items-center gap-3 rounded-lg">
+
           <span className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <Brain className="size-6" aria-hidden="true" />
           </span>
