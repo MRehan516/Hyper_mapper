@@ -466,8 +466,8 @@ function Index() {
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
         {activeTab === "Dashboard" ? (
-          <div key="dashboard" className="animate-fade-in">
-        <section className="no-print mb-8 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-7 shadow-sm sm:p-9">
+          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-3xl space-y-8">
+        <section className="no-print overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-8 shadow-sm">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1.5 text-xs font-semibold text-accent-foreground">
             <Activity className="size-3.5" aria-hidden="true" />
             Cognitive Sync: Active
@@ -480,15 +480,20 @@ function Index() {
           </p>
         </section>
 
-        <div className="no-print mb-6 flex flex-col items-center justify-center gap-2 rounded-lg bg-secondary/40 px-4 py-3 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
-          <Brain className="size-4 shrink-0" aria-hidden="true" />
-          <span>Designed for how your brain works — zero medical labels, zero diagnostic profiling required.</span>
+        <div className="no-print space-y-3">
+          <div className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-secondary/40 px-8 py-6 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
+            <Brain className="size-4 shrink-0" aria-hidden="true" />
+            <span>Designed for how your brain works — zero medical labels, zero diagnostic profiling required.</span>
+          </div>
+          <p className="mx-auto max-w-2xl text-center text-xs leading-relaxed text-muted-foreground">
+            <span className="font-semibold text-accent-foreground">Layout Spec:</span> Enforces 32px
+            Cognitive Padding to prevent visual crowding and sensory overload.
+          </p>
         </div>
 
         <section
-
           aria-labelledby="step-one"
-          className="no-print mx-auto w-full max-w-[700px] rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8"
+          className="no-print w-full rounded-2xl border border-border bg-card p-8 shadow-sm"
         >
           <h2 id="step-one" className="font-display text-2xl font-bold text-foreground">
             Build your concept map
@@ -496,6 +501,7 @@ function Index() {
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             Tell us what you are learning and the system you already understand deeply.
           </p>
+
 
           <div className="mt-6 space-y-6">
             <div className="space-y-3">
