@@ -3,6 +3,7 @@ import { Brain, Moon, Sun, MessageSquareHeart, Home } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { InstallButton } from "@/components/install-button";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 
 export function SiteHeader({
