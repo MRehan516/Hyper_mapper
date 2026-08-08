@@ -756,7 +756,7 @@ function Index() {
         </section>
 
         {error ? (
-          <div className="mx-auto mt-8 w-full max-w-[700px]">
+          <div className="w-full">
             <ErrorCard message={error} onRetry={generate} />
           </div>
         ) : null}
