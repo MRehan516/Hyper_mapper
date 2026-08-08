@@ -621,6 +621,46 @@ function Index() {
             ) : null}
           </>
         ) : null}
+
+        {deck.length > 0 ? (
+          <section aria-labelledby="saved-maps-heading" className="mt-12">
+            <h2 id="saved-maps-heading" className="text-xl font-bold text-foreground">
+              Your Saved Maps
+            </h2>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              Your last {deck.length} concept {deck.length === 1 ? "map" : "maps"}, kept on this
+              device only.
+            </p>
+            <Accordion type="single" collapsible className="mt-4">
+              {deck.map((saved) => (
+                <AccordionItem key={saved._id} value={saved._id}>
+                  <AccordionTrigger className="min-h-11 text-left text-base font-semibold">
+                    {saved._raw_concept || "Saved concept map"}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    {saved._cognitive_anchor ? (
+                      <p className="text-sm font-semibold text-accent-foreground">
+                        Anchor: {saved._cognitive_anchor}
+                      </p>
+                    ) : null}
+                    {saved.concept_summary ? (
+                      <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                        {saved.concept_summary}
+                      </p>
+                    ) : null}
+                    {Array.isArray(saved.mappings) && saved.mappings.length > 0 ? (
+                      <div className="mt-4 grid gap-4">
+                        {saved.mappings.map((mapping: any, index: number) => (
+                          <MappingCard key={index} mapping={mapping} index={index} />
+                        ))}
+                      </div>
+                    ) : null}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </section>
+        ) : null}
       </main>
     </div>
   );
