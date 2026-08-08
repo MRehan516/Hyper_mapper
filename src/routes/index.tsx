@@ -180,7 +180,7 @@ function MappingCard({
   index: number;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <div className="print-card rounded-2xl border border-border bg-card p-6 shadow-sm">
       <span className="inline-flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
         {index + 1}
       </span>
