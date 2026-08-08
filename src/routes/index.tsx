@@ -516,7 +516,7 @@ function Index() {
                   {result.mappings?.map((mapping, index) => (
                     <li
                       key={`${mapping.concept_element}-${index}`}
-                      className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+                      className="print-card rounded-2xl border border-border bg-card p-6 shadow-sm"
                     >
                       <span className="inline-flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
                         {index + 1}
