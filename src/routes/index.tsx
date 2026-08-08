@@ -349,7 +349,7 @@ function Index() {
 
         <section
           aria-labelledby="step-one"
-          className="mx-auto w-full max-w-[700px] rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8"
+          className="no-print mx-auto w-full max-w-[700px] rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8"
         >
           <h2 id="step-one" className="font-display text-2xl font-bold text-foreground">
             Build your concept map
