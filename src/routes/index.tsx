@@ -1,6 +1,18 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Sparkles, CheckCircle2, XCircle, Lightbulb } from "lucide-react";
+import {
+  Loader2,
+  Sparkles,
+  CheckCircle2,
+  XCircle,
+  Lightbulb,
+  Gamepad2,
+  Trophy,
+  ChefHat,
+  TrainFront,
+  Music,
+  Clapperboard,
+} from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { ErrorCard } from "@/components/error-card";
 import { Button } from "@/components/ui/button";
@@ -68,6 +80,15 @@ function isCorrect(
   return question.correct_answer === option;
 }
 
+const anchorSuggestions = [
+  { icon: Gamepad2, label: "Video games", value: "Video game logic — " },
+  { icon: Trophy, label: "A sport I play", value: "Sports rules — " },
+  { icon: ChefHat, label: "Cooking", value: "Baking/Cooking steps — " },
+  { icon: TrainFront, label: "Public transit", value: "City transit maps — " },
+  { icon: Music, label: "Music", value: "Music production — " },
+  { icon: Clapperboard, label: "A show I love", value: "TV/Movie plots — " },
+];
+
 function Index() {
   const [rawConcept, setRawConcept] = useState("");
   const [anchor, setAnchor] = useState("");
@@ -76,6 +97,7 @@ function Index() {
   const [result, setResult] = useState<ConceptMapPayload | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const anchorInputRef = useRef<HTMLInputElement>(null);
 
   const questions = result?.comprehension_check ?? [];
   const answeredCount = Object.keys(answers).length;
@@ -86,6 +108,16 @@ function Index() {
     return total + (isCorrect(question, chosen, optionIndex) ? 1 : 0);
   }, 0);
   const quizComplete = questions.length > 0 && answeredCount === questions.length;
+
+  function applyAnchorSuggestion(value: string) {
+    setAnchor(value);
+    requestAnimationFrame(() => {
+      const input = anchorInputRef.current;
+      if (!input) return;
+      input.focus();
+      input.setSelectionRange(value.length, value.length);
+    });
+  }
 
   async function generate() {
     setError(null);
