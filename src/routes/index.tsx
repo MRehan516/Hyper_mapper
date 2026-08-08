@@ -98,6 +98,7 @@ function Index() {
   const [result, setResult] = useState<ConceptMapPayload | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [bridgeAnswer, setBridgeAnswer] = useState<number | null>(null);
   const anchorInputRef = useRef<HTMLInputElement>(null);
 
   const questions = result?.comprehension_check ?? [];
@@ -125,6 +126,7 @@ function Index() {
     setResult(null);
     setSessionId(null);
     setAnswers({});
+    setBridgeAnswer(null);
 
     if (!isSupabaseConfigured) {
       setError(MISSING_CONFIG_MESSAGE);
