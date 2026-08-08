@@ -174,7 +174,14 @@ function Index() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [bridgeAnswer, setBridgeAnswer] = useState<number | null>(null);
+  const [isFocusMode, setIsFocusMode] = useState(false);
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
   const anchorInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setActiveCardIndex(0);
+    setIsFocusMode(false);
+  }, [result]);
 
   const questions = result?.comprehension_check ?? [];
   const answeredCount = Object.keys(answers).length;
