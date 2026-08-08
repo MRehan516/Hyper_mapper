@@ -17,6 +17,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
+  Zap,
+  Sprout,
+  Contrast,
+  Puzzle,
+  MessageSquareHeart,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { ErrorCard } from "@/components/error-card";
@@ -172,6 +177,13 @@ const anchorSuggestions = [
   { icon: Clapperboard, label: "A show I love", value: "TV/Movie plots — " },
 ];
 
+const sensoryOptions = [
+  { value: "Short Sentences", label: "⚡ Short Sentences", icon: Zap },
+  { value: "Plain Language (No Jargon)", label: "🌱 Plain Language (No Jargon)", icon: Sprout },
+  { value: "High Visual Contrast", label: "🎯 High Visual Contrast", icon: Contrast },
+  { value: "Break into Micro-Steps", label: "🧩 Break into Micro-Steps", icon: Puzzle },
+];
+
 function MappingCard({
   mapping,
   index,
@@ -202,6 +214,25 @@ function Index() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [bridgeAnswer, setBridgeAnswer] = useState<number | null>(null);
+  const [sensoryPrefs, setSensoryPrefs] = useState<string[]>([]);
+  const [feedbackEmail, setFeedbackEmail] = useState("");
+  const [feedbackTesterId, setFeedbackTesterId] = useState("");
+  const [feedbackClarity, setFeedbackClarity] = useState<number | null>(null);
+  const [feedbackFriction, setFeedbackFriction] = useState<number | null>(null);
+  const [feedbackNotes, setFeedbackNotes] = useState("");
+  const [feedbackError, setFeedbackError] = useState<string | null>(null);
+  const [feedbackSaving, setFeedbackSaving] = useState(false);
+  const [sessionFeedback, setSessionFeedback] = useState<
+    {
+      id: string;
+      tester_id: string;
+      tester_email: string;
+      clarity: number | null;
+      friction: number | null;
+      notes: string;
+      at: string;
+    }[]
+  >([]);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const [deck, setDeck] = useState<any[]>(() => {
@@ -247,12 +278,69 @@ function Index() {
     }, 0);
   }
 
+  function toggleSensoryPref(value: string) {
+    setSensoryPrefs((prev) =>
+      prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value],
+    );
+  }
+
+  async function submitSessionFeedback() {
+    setFeedbackError(null);
+    if (!feedbackTesterId.trim() || !feedbackEmail.trim()) {
+      setFeedbackError("Please add your tester ID and email address.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(feedbackEmail.trim())) {
+      setFeedbackError("Please enter a valid email address.");
+      return;
+    }
+
+    setFeedbackSaving(true);
+    const { data, error: insertError } = await supabase
+      .from("tester_feedback")
+      .insert({
+        session_id: sessionId,
+        tester_type: feedbackTesterId.trim(),
+        tester_id: feedbackTesterId.trim(),
+        tester_email: feedbackEmail.trim(),
+        clarity_rating: feedbackClarity,
+        cognitive_friction_reduction_rating: feedbackFriction,
+        qualitative_notes: feedbackNotes.trim() || null,
+      })
+      .select("id, created_at")
+      .maybeSingle();
+    setFeedbackSaving(false);
+
+    if (insertError) {
+      setFeedbackError(insertError.message);
+      return;
+    }
+
+    setSessionFeedback((prev) => [
+      {
+        id: (data?.id as string) ?? crypto.randomUUID(),
+        tester_id: feedbackTesterId.trim(),
+        tester_email: feedbackEmail.trim(),
+        clarity: feedbackClarity,
+        friction: feedbackFriction,
+        notes: feedbackNotes.trim(),
+        at: (data?.created_at as string) ?? new Date().toISOString(),
+      },
+      ...prev,
+    ]);
+    setFeedbackNotes("");
+    setFeedbackClarity(null);
+    setFeedbackFriction(null);
+  }
+
   async function generate() {
     setError(null);
     setResult(null);
     setSessionId(null);
     setAnswers({});
     setBridgeAnswer(null);
+    setSessionFeedback([]);
+    setFeedbackError(null);
 
     if (!isSupabaseConfigured) {
       setError(MISSING_CONFIG_MESSAGE);
@@ -266,9 +354,12 @@ function Index() {
     setLoading(true);
     const raw_concept = rawConcept.trim();
     const cognitive_anchor = anchor.trim();
+    const conceptText =
+      raw_concept +
+      (sensoryPrefs.length ? ` [Formatting constraints: ${sensoryPrefs.join(", ")}]` : "");
 
     const { data, error: fnError } = await supabase.functions.invoke("map-concept", {
-      body: { raw_concept, cognitive_anchor },
+      body: { raw_concept: conceptText, cognitive_anchor },
     });
 
     if (fnError) {
@@ -408,6 +499,38 @@ function Index() {
                 })}
               </div>
             </div>
+
+            <Accordion type="single" collapsible className="rounded-xl border border-border">
+              <AccordionItem value="sensory" className="border-b-0">
+                <AccordionTrigger className="min-h-11 px-4 text-left text-base font-semibold">
+                  Sensory &amp; Formatting Options (Optional)
+                </AccordionTrigger>
+                <AccordionContent className="px-4">
+                  <div role="group" aria-label="Sensory and formatting preferences" className="flex flex-wrap gap-2 pb-2">
+                    {sensoryOptions.map((option) => {
+                      const Icon = option.icon;
+                      const selected = sensoryPrefs.includes(option.value);
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          aria-pressed={selected}
+                          onClick={() => toggleSensoryPref(option.value)}
+                          className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                            selected
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-card text-foreground hover:border-primary hover:bg-secondary"
+                          }`}
+                        >
+                          <Icon className="size-4 shrink-0" aria-hidden="true" />
+                          <span>{option.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
 
             <Button
               type="button"
@@ -632,6 +755,124 @@ function Index() {
               />
             ) : null}
           </>
+        ) : null}
+
+        {result ? (
+          <section aria-labelledby="session-feedback" className="no-print mt-12">
+            <h2 id="session-feedback" className="font-display text-xl font-bold text-foreground">
+              <MessageSquareHeart className="mr-2 inline size-5 text-primary" aria-hidden="true" />
+              Feedback on this conversation
+            </h2>
+            <div className="mt-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="fb-id" className="text-base font-semibold">
+                    Tester ID
+                  </Label>
+                  <Input
+                    id="fb-id"
+                    value={feedbackTesterId}
+                    onChange={(event) => setFeedbackTesterId(event.target.value)}
+                    placeholder="e.g., NNEA-014"
+                    className="min-h-12 text-base"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="fb-email" className="text-base font-semibold">
+                    Email address
+                  </Label>
+                  <Input
+                    id="fb-email"
+                    type="email"
+                    value={feedbackEmail}
+                    onChange={(event) => setFeedbackEmail(event.target.value)}
+                    placeholder="you@example.com"
+                    className="min-h-12 text-base"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                {[
+                  { label: "Clarity (1-5)", value: feedbackClarity, set: setFeedbackClarity, name: "clarity" },
+                  { label: "Friction reduced (1-5)", value: feedbackFriction, set: setFeedbackFriction, name: "friction" },
+                ].map((group) => (
+                  <div key={group.name} className="space-y-2">
+                    <p className="text-base font-semibold text-foreground">{group.label}</p>
+                    <div role="group" aria-label={group.label} className="flex flex-wrap gap-2">
+                      {[1, 2, 3, 4, 5].map((rating) => (
+                        <button
+                          key={rating}
+                          type="button"
+                          aria-pressed={group.value === rating}
+                          onClick={() => group.set(rating)}
+                          className={`inline-flex size-11 items-center justify-center rounded-full border-2 text-sm font-bold transition-colors ${
+                            group.value === rating
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-card text-foreground hover:bg-secondary"
+                          }`}
+                        >
+                          {rating}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 space-y-2">
+                <Label htmlFor="fb-notes" className="text-base font-semibold">
+                  Notes (optional)
+                </Label>
+                <Textarea
+                  id="fb-notes"
+                  rows={3}
+                  value={feedbackNotes}
+                  onChange={(event) => setFeedbackNotes(event.target.value)}
+                  placeholder="What worked, what felt confusing?"
+                  className="text-base leading-relaxed"
+                />
+              </div>
+
+              {feedbackError ? (
+                <p
+                  role="alert"
+                  className="mt-4 rounded-xl border-2 border-destructive bg-destructive-soft px-4 py-3 text-sm font-medium text-foreground"
+                >
+                  {feedbackError}
+                </p>
+              ) : null}
+
+              <Button
+                type="button"
+                onClick={submitSessionFeedback}
+                disabled={feedbackSaving}
+                className="mt-5 min-h-12 w-full text-base font-semibold sm:w-auto sm:px-6"
+              >
+                {feedbackSaving ? "Saving feedback..." : "Submit feedback"}
+              </Button>
+            </div>
+
+            {sessionFeedback.length > 0 ? (
+              <ul aria-live="polite" className="mt-5 space-y-4">
+                {sessionFeedback.map((entry) => (
+                  <li key={entry.id} className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+                    <p className="text-base font-bold text-foreground">{entry.tester_id}</p>
+                    <p className="text-sm text-muted-foreground">{entry.tester_email}</p>
+                    <p className="mt-2 text-sm font-semibold text-accent-foreground">
+                      Clarity: {entry.clarity ?? "—"}/5 · Friction reduced: {entry.friction ?? "—"}/5
+                    </p>
+                    {entry.notes ? (
+                      <p className="mt-2 text-base leading-relaxed text-muted-foreground">{entry.notes}</p>
+                    ) : null}
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {new Date(entry.at).toLocaleString()}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </section>
         ) : null}
 
         {deck.length > 0 ? (
