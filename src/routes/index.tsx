@@ -635,7 +635,7 @@ function Index() {
         ) : null}
 
         {deck.length > 0 ? (
-          <section aria-labelledby="saved-maps-heading" className="mt-12">
+          <section aria-labelledby="saved-maps-heading" className="no-print mt-12">
             <h2 id="saved-maps-heading" className="text-xl font-bold text-foreground">
               Your Saved Maps
             </h2>
