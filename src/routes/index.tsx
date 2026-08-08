@@ -287,6 +287,18 @@ function Index() {
 
     const payload = data.data as ConceptMapPayload;
     setResult(payload);
+    setDeck((prev) =>
+      [
+        {
+          ...payload,
+          _id: crypto.randomUUID(),
+          _raw_concept: raw_concept,
+          _cognitive_anchor: cognitive_anchor,
+          _saved_at: new Date().toISOString(),
+        },
+        ...prev,
+      ].slice(0, 15),
+    );
     setLoading(false);
 
     const { data: inserted, error: insertError } = await supabase
