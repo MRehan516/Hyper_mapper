@@ -877,6 +877,52 @@ function Index() {
               </article>
             </div>
 
+            <section
+              aria-labelledby="pattern-intelligence"
+              className="rounded-3xl border border-border bg-card p-8 shadow-sm"
+            >
+              <p className="inline-flex items-center gap-2 rounded-full bg-secondary/60 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-secondary-foreground">
+                <Activity className="size-3.5" aria-hidden="true" />
+                Local pattern intelligence
+              </p>
+              <h3
+                id="pattern-intelligence"
+                className="mt-4 font-display text-2xl font-bold text-foreground"
+              >
+                Autonomous Behavioral Adaptation
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Derived locally from your usage patterns. Nothing leaves this device.
+              </p>
+
+              <div className="mt-6 grid gap-5 sm:grid-cols-3">
+                <div className="rounded-2xl border border-border bg-gradient-to-br from-primary-soft to-card p-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                    Maps generated
+                  </p>
+                  <p className="mt-2 font-display text-4xl font-bold text-foreground">
+                    {deckStats.total}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-border bg-gradient-to-br from-highlight-soft to-card p-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                    Top anchor category
+                  </p>
+                  <p className="mt-2 font-display text-2xl font-bold leading-snug text-foreground">
+                    {deckStats.topCategory}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-border bg-gradient-to-br from-secondary to-card p-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                    Distinct anchors used
+                  </p>
+                  <p className="mt-2 font-display text-4xl font-bold text-foreground">
+                    {deckStats.distinctAnchors}
+                  </p>
+                </div>
+              </div>
+            </section>
+
             <Button
               type="button"
               onClick={exportTeacherPass}
