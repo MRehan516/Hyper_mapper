@@ -210,6 +210,17 @@ const formatOptions = [
   { value: "Flowchart", icon: GitBranch },
 ];
 
+const formatInstructions: Record<string, string> = {
+  "Concept Map":
+    "Generate a standard 4-step conceptual analogy mapping: each step pairs one concept element with its anchor equivalent and a clear plain-language explanation.",
+  "Story Mode":
+    "Transform the explanation into a cohesive, narrative-driven story that uses the cognitive anchor as the setting. Each mapping's explanation should read as a connected scene of one continuous story, in order.",
+  "Bullet Points":
+    "Structure the breakdown as ultra-concise, high-scannability bullet points. Keep every explanation to one or two short lines — no long paragraphs.",
+  "Flowchart":
+    "Format the steps as an explicit sequential workflow with directional logic (e.g. 'Condition A triggers State B'). Each step must clearly lead into the next.",
+};
+
 const anchorCategories: { label: string; keywords: string[] }[] = [
   { label: "Video games", keywords: ["game", "gaming", "minecraft", "redstone", "roblox", "fortnite", "console"] },
   { label: "Sports", keywords: ["sport", "soccer", "football", "basketball", "team", "coach", "match"] },
