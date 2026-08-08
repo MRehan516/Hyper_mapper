@@ -1,6 +1,18 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Sparkles, CheckCircle2, XCircle, Lightbulb } from "lucide-react";
+import {
+  Loader2,
+  Sparkles,
+  CheckCircle2,
+  XCircle,
+  Lightbulb,
+  Gamepad2,
+  Trophy,
+  ChefHat,
+  TrainFront,
+  Music,
+  Clapperboard,
+} from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { ErrorCard } from "@/components/error-card";
 import { Button } from "@/components/ui/button";
@@ -68,6 +80,15 @@ function isCorrect(
   return question.correct_answer === option;
 }
 
+const anchorSuggestions = [
+  { icon: Gamepad2, label: "Video games", value: "Video game logic — " },
+  { icon: Trophy, label: "A sport I play", value: "Sports rules — " },
+  { icon: ChefHat, label: "Cooking", value: "Baking/Cooking steps — " },
+  { icon: TrainFront, label: "Public transit", value: "City transit maps — " },
+  { icon: Music, label: "Music", value: "Music production — " },
+  { icon: Clapperboard, label: "A show I love", value: "TV/Movie plots — " },
+];
+
 function Index() {
   const [rawConcept, setRawConcept] = useState("");
   const [anchor, setAnchor] = useState("");
@@ -76,6 +97,7 @@ function Index() {
   const [result, setResult] = useState<ConceptMapPayload | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const anchorInputRef = useRef<HTMLInputElement>(null);
 
   const questions = result?.comprehension_check ?? [];
   const answeredCount = Object.keys(answers).length;
@@ -86,6 +108,16 @@ function Index() {
     return total + (isCorrect(question, chosen, optionIndex) ? 1 : 0);
   }, 0);
   const quizComplete = questions.length > 0 && answeredCount === questions.length;
+
+  function applyAnchorSuggestion(value: string) {
+    setAnchor(value);
+    requestAnimationFrame(() => {
+      const input = anchorInputRef.current;
+      if (!input) return;
+      input.focus();
+      input.setSelectionRange(value.length, value.length);
+    });
+  }
 
   async function generate() {
     setError(null);
@@ -199,11 +231,34 @@ function Index() {
               </Label>
               <Input
                 id="anchor"
+                ref={anchorInputRef}
                 value={anchor}
                 onChange={(event) => setAnchor(event.target.value)}
                 placeholder="e.g., Computer Logic Gates, City Transit Maps, Minecraft Redstone, Music Theory..."
                 className="min-h-12 text-base"
               />
+              <div
+                role="list"
+                aria-label="Anchor suggestions"
+                className="flex flex-wrap gap-2"
+              >
+                {anchorSuggestions.map((suggestion) => {
+                  const Icon = suggestion.icon;
+                  return (
+                    <button
+                      key={suggestion.value}
+                      type="button"
+                      role="listitem"
+                      onClick={() => applyAnchorSuggestion(suggestion.value)}
+                      aria-label={`Use anchor: ${suggestion.value}`}
+                      className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-border bg-card px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    >
+                      <Icon className="size-4 shrink-0" aria-hidden="true" />
+                      <span>{suggestion.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <Button
