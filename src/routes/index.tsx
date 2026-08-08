@@ -426,10 +426,21 @@ function Index() {
   }
 
   return (
-    <div className="min-h-dvh bg-background">
-      <SiteHeader />
-      <main className="mx-auto max-w-5xl px-5 py-10">
+    <SidebarProvider>
+      <div
+        className={`flex min-h-dvh w-full bg-background ${isPrintingProfile ? "printing-profile" : ""}`}
+      >
+        <AppSidebar
+          deck={deck}
+          cognitiveAnchor={anchor}
+          sensoryPrefs={sensoryPrefs}
+          onExportTeacherPass={exportTeacherPass}
+        />
+        <SidebarInset className="bg-background">
+        <SiteHeader withSidebarTrigger onOpenFeedback={() => setFeedbackOpen(true)} />
+        <main className="mx-auto w-full max-w-5xl px-5 py-10">
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
+
 
         <div className="no-print mb-6 flex flex-col items-center justify-center gap-2 rounded-lg bg-secondary/40 px-4 py-3 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
           <Brain className="size-4 shrink-0" aria-hidden="true" />
