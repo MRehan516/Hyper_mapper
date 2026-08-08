@@ -30,8 +30,15 @@ export type ComprehensionQuestion = {
   explanation?: string;
 };
 
+export type BridgeCheck = {
+  question: string;
+  options: string[];
+  correct_index: number;
+};
+
 export type ConceptMapPayload = {
   concept_summary: string;
   mappings: Mapping[];
   comprehension_check: ComprehensionQuestion[];
+  bridge_check?: BridgeCheck;
 };
