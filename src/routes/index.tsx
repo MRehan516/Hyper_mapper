@@ -444,7 +444,7 @@ function Index() {
               <h2 id="summary" className="font-display text-2xl font-bold text-foreground">
                 Your concept map
               </h2>
-              <div className="mt-4 rounded-2xl border-2 border-highlight/50 bg-highlight-soft p-6 shadow-sm">
+              <div className="print-card mt-4 rounded-2xl border-2 border-highlight/50 bg-highlight-soft p-6 shadow-sm">
                 <div className="flex items-start gap-3">
                   <Lightbulb className="mt-1 size-5 shrink-0 text-highlight" aria-hidden="true" />
                   <p className="text-base leading-relaxed text-foreground">
