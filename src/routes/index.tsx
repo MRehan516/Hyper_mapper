@@ -499,6 +499,33 @@ function Index() {
 
           <div className="mt-6 space-y-6">
             <div className="space-y-3">
+              <p className="text-base font-semibold text-foreground">Output format</p>
+              <div role="group" aria-label="Output format" className="flex flex-wrap gap-2">
+                {formatOptions.map((option) => {
+                  const Icon = option.icon;
+                  const selected = selectedFormat === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => setSelectedFormat(option.value)}
+                      className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors ${
+                        selected
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-card text-foreground hover:border-primary hover:bg-secondary"
+                      }`}
+                    >
+                      <Icon className="size-4 shrink-0" aria-hidden="true" />
+                      <span>{option.value}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+
               <Label htmlFor="concept" className="text-base font-semibold">
                 Academic Concept to Learn
               </Label>
