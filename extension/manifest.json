@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Hyper-Mapper",
+  "description": "An inclusive K-12 learning tool that maps abstract concepts to familiar systems.",
+  "version": "1.0.0",
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["https://*.supabase.co/*"],
+  "action": {
+    "default_title": "Open Hyper-Mapper",
+    "default_popup": "index.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://*.supabase.co"
+  }
+}

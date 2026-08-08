@@ -194,3 +194,19 @@
   }
 }
 
+
+/* Chrome popup/side-panel surfaces are narrow; keep every root wrapper shrinkable. */
+html,
+body,
+#root {
+  min-width: 0;
+  max-width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+}
