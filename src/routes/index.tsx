@@ -81,6 +81,77 @@ function isCorrect(
   return question.correct_answer === option;
 }
 
+function BridgeCheckCard({
+  bridge_check,
+  bridgeAnswer,
+  setBridgeAnswer,
+}: {
+  bridge_check: import("@/lib/supabase").BridgeCheck;
+  bridgeAnswer: number | null;
+  setBridgeAnswer: (index: number) => void;
+}) {
+  return (
+    <section aria-labelledby="bridge-check" className="mt-10">
+      <h2 id="bridge-check" className="font-display text-xl font-bold text-foreground">
+        One more check
+      </h2>
+      <div className="mt-4 rounded-2xl border border-border border-l-4 border-l-primary bg-secondary/30 p-6 shadow-sm">
+        <div className="flex items-start gap-3">
+          <ShieldCheck className="mt-1 size-5 shrink-0 text-primary" aria-hidden="true" />
+          <p className="text-base font-semibold leading-relaxed text-foreground">
+            One more check — no factory, no game, just the real thing
+          </p>
+        </div>
+        <p className="mt-4 text-base font-semibold leading-relaxed text-foreground">
+          {bridge_check.question}
+        </p>
+        <div
+          role="group"
+          aria-label={bridge_check.question}
+          className="mt-4 space-y-3"
+        >
+          {bridge_check.options.map((option, optionIndex) => {
+            const correct = bridge_check.correct_index === optionIndex;
+            const picked = bridgeAnswer === optionIndex;
+            const revealed = bridgeAnswer !== null;
+            const classes = !revealed
+              ? "border-border bg-card hover:bg-secondary"
+              : correct
+                ? "border-success bg-success-soft"
+                : picked
+                  ? "border-destructive bg-destructive-soft"
+                  : "border-border bg-card opacity-70";
+            return (
+              <button
+                key={option}
+                type="button"
+                disabled={revealed}
+                onClick={() => setBridgeAnswer(optionIndex)}
+                aria-label={`Answer: ${option}`}
+                className={`flex min-h-12 w-full items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-base leading-relaxed text-foreground transition-colors ${classes}`}
+              >
+                {revealed && correct ? (
+                  <CheckCircle2 className="size-5 shrink-0 text-success" aria-hidden="true" />
+                ) : null}
+                {revealed && picked && !correct ? (
+                  <XCircle className="size-5 shrink-0 text-destructive" aria-hidden="true" />
+                ) : null}
+                <span>{option}</span>
+                {revealed && correct ? (
+                  <span className="ml-auto text-xs font-semibold uppercase text-success">Correct</span>
+                ) : null}
+                {revealed && picked && !correct ? (
+                  <span className="ml-auto text-xs font-semibold uppercase text-destructive">Your answer</span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const anchorSuggestions = [
   { icon: Gamepad2, label: "Video games", value: "Video game logic — " },
   { icon: Trophy, label: "A sport I play", value: "Sports rules — " },
