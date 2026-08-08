@@ -194,3 +194,39 @@
   }
 }
 
+@media print {
+  @page {
+    margin: 1.5cm;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  body * {
+    color: black !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border-color: #999 !important;
+    text-shadow: none !important;
+  }
+
+  .print-card,
+  section,
+  li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-card {
+    border: 1px solid #999 !important;
+  }
+}
+

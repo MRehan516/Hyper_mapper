@@ -16,6 +16,7 @@ import {
   Brain,
   ChevronLeft,
   ChevronRight,
+  Download,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { ErrorCard } from "@/components/error-card";
@@ -179,7 +180,7 @@ function MappingCard({
   index: number;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+    <div className="print-card rounded-2xl border border-border bg-card p-6 shadow-sm">
       <span className="inline-flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
         {index + 1}
       </span>
@@ -339,7 +340,7 @@ function Index() {
       <main className="mx-auto max-w-5xl px-5 py-10">
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
-        <div className="mb-6 flex flex-col items-center justify-center gap-2 rounded-lg bg-secondary/40 px-4 py-3 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
+        <div className="no-print mb-6 flex flex-col items-center justify-center gap-2 rounded-lg bg-secondary/40 px-4 py-3 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
           <Brain className="size-4 shrink-0" aria-hidden="true" />
           <span>Designed for how your brain works — zero medical labels, zero diagnostic profiling required.</span>
         </div>
@@ -348,7 +349,7 @@ function Index() {
 
         <section
           aria-labelledby="step-one"
-          className="mx-auto w-full max-w-[700px] rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8"
+          className="no-print mx-auto w-full max-w-[700px] rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8"
         >
           <h2 id="step-one" className="font-display text-2xl font-bold text-foreground">
             Build your concept map
@@ -443,7 +444,7 @@ function Index() {
               <h2 id="summary" className="font-display text-2xl font-bold text-foreground">
                 Your concept map
               </h2>
-              <div className="mt-4 rounded-2xl border-2 border-highlight/50 bg-highlight-soft p-6 shadow-sm">
+              <div className="print-card mt-4 rounded-2xl border-2 border-highlight/50 bg-highlight-soft p-6 shadow-sm">
                 <div className="flex items-start gap-3">
                   <Lightbulb className="mt-1 size-5 shrink-0 text-highlight" aria-hidden="true" />
                   <p className="text-base leading-relaxed text-foreground">
@@ -458,22 +459,33 @@ function Index() {
                 <h2 id="mappings" className="font-display text-xl font-bold text-foreground">
                   Analogy mapping steps
                 </h2>
-                <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm">
-                  <Switch
-                    id="focus-mode"
-                    checked={isFocusMode}
-                    onCheckedChange={setIsFocusMode}
-                  />
-                  <Label htmlFor="focus-mode" className="cursor-pointer text-sm font-medium">
-                    Focus Mode (One step at a time)
-                  </Label>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => window.print()}
+                    className="no-print min-h-11 px-4 text-sm font-semibold"
+                  >
+                    <Download className="size-4" aria-hidden="true" />
+                    Download as Study Sheet
+                  </Button>
+                  <div className="no-print flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm">
+                    <Switch
+                      id="focus-mode"
+                      checked={isFocusMode}
+                      onCheckedChange={setIsFocusMode}
+                    />
+                    <Label htmlFor="focus-mode" className="cursor-pointer text-sm font-medium">
+                      Focus Mode (One step at a time)
+                    </Label>
+                  </div>
                 </div>
               </div>
 
               {isFocusMode && result.mappings[activeCardIndex] ? (
                 <div className="mt-4">
                   <MappingCard mapping={result.mappings[activeCardIndex]!} index={activeCardIndex} />
-                  <div className="mt-5 flex items-center justify-between gap-3">
+                  <div className="no-print mt-5 flex items-center justify-between gap-3">
                     <Button
                       type="button"
                       variant="outline"
@@ -504,7 +516,7 @@ function Index() {
                   {result.mappings?.map((mapping, index) => (
                     <li
                       key={`${mapping.concept_element}-${index}`}
-                      className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+                      className="print-card rounded-2xl border border-border bg-card p-6 shadow-sm"
                     >
                       <span className="inline-flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
                         {index + 1}
@@ -535,7 +547,7 @@ function Index() {
                     return (
                       <li
                         key={`${question.question}-${questionIndex}`}
-                        className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+                        className="print-card rounded-2xl border border-border bg-card p-6 shadow-sm"
                       >
                         <p className="text-base font-semibold leading-relaxed text-foreground">
                           {questionIndex + 1}. {question.question}
@@ -623,7 +635,7 @@ function Index() {
         ) : null}
 
         {deck.length > 0 ? (
-          <section aria-labelledby="saved-maps-heading" className="mt-12">
+          <section aria-labelledby="saved-maps-heading" className="no-print mt-12">
             <h2 id="saved-maps-heading" className="text-xl font-bold text-foreground">
               Your Saved Maps
             </h2>
