@@ -494,6 +494,14 @@ function Index() {
                 </p>
               </section>
             ) : null}
+
+            {result?.bridge_check ? (
+              <BridgeCheckCard
+                bridge_check={result.bridge_check}
+                bridgeAnswer={bridgeAnswer}
+                setBridgeAnswer={setBridgeAnswer}
+              />
+            ) : null}
           </>
         ) : null}
       </main>
