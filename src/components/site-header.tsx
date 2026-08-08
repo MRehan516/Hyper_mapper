@@ -43,12 +43,24 @@ export function SiteHeader({
             <Home className="size-3.5" aria-hidden="true" />
             Designed &amp; Tested with NNEA Self-Advocates
           </Link>
-          <Button asChild variant="ghost" className="min-h-11 gap-2">
-            <Link to="/tester-feedback">
+          {onOpenFeedback ? (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onOpenFeedback}
+              className="min-h-11 gap-2"
+            >
               <MessageSquareHeart className="size-4" aria-hidden="true" />
               <span className="hidden sm:inline">Tester feedback</span>
-            </Link>
-          </Button>
+            </Button>
+          ) : (
+            <Button asChild variant="ghost" className="min-h-11 gap-2">
+              <Link to="/tester-feedback">
+                <MessageSquareHeart className="size-4" aria-hidden="true" />
+                <span className="hidden sm:inline">Tester feedback</span>
+              </Link>
+            </Button>
+          )}
           <InstallButton />
           <Button
 
