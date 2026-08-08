@@ -446,8 +446,9 @@ function Index() {
     const cognitive_anchor = anchor.trim();
     const conceptText =
       raw_concept +
-      ` [Format as: ${selectedFormat}]` +
+      ` [Output format: ${selectedFormat}. ${formatInstructions[selectedFormat] ?? ""}]` +
       (sensoryPrefs.length ? ` [Formatting constraints: ${sensoryPrefs.join(", ")}]` : "");
+    setResultFormat(selectedFormat);
 
 
     const { data, error: fnError } = await supabase.functions.invoke("map-concept", {
