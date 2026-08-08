@@ -203,7 +203,23 @@ function Index() {
   const [bridgeAnswer, setBridgeAnswer] = useState<number | null>(null);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [deck, setDeck] = useState<any[]>(() => {
+    try {
+      const saved = localStorage.getItem("hypermapper_deck");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const anchorInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("hypermapper_deck", JSON.stringify(deck));
+    } catch {
+      /* storage unavailable or full — deck stays in memory only */
+    }
+  }, [deck]);
 
   useEffect(() => {
     setActiveCardIndex(0);
