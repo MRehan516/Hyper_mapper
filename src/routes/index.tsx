@@ -274,6 +274,13 @@ function Index() {
       <main className="mx-auto max-w-5xl px-5 py-10">
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
+        <div className="mb-6 flex flex-col items-center justify-center gap-2 rounded-lg bg-secondary/40 px-4 py-3 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
+          <Brain className="size-4 shrink-0" aria-hidden="true" />
+          <span>Designed for how your brain works — zero medical labels, zero diagnostic profiling required.</span>
+        </div>
+
+
+
         <section
           aria-labelledby="step-one"
           className="mx-auto w-full max-w-[700px] rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8"
