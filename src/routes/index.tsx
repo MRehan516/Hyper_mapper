@@ -22,10 +22,19 @@ import {
   Contrast,
   Puzzle,
   MessageSquareHeart,
+  Printer,
+  Network,
+  BookOpen,
+  List,
+  GitBranch,
+  Activity,
+  Layers,
+  FileText,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar, type WorkspaceTab } from "@/components/app-sidebar";
 import { MappingCard } from "@/components/mapping-card";
+
 import { ErrorCard } from "@/components/error-card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
