@@ -831,6 +831,162 @@ function Index() {
             ) : null}
           </>
         ) : null}
+          </div>
+        ) : null}
+
+        {activeTab === "My Learning DNA" ? (
+          <div key="dna" className="no-profile-print animate-fade-in space-y-8">
+            <header>
+              <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
+                My Learning DNA
+              </h2>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                Your cognitive profile — no diagnosis, no labels. Share it with a teacher in one page.
+              </p>
+            </header>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <article className="rounded-3xl border border-border bg-gradient-to-br from-primary-soft to-card p-8 shadow-sm">
+                <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                  Cognitive anchor
+                </p>
+                <p className="mt-3 font-display text-2xl font-bold leading-snug text-foreground">
+                  {anchor || "Not chosen yet"}
+                </p>
+              </article>
+              <article className="rounded-3xl border border-border bg-gradient-to-br from-highlight-soft to-card p-8 shadow-sm">
+                <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                  Sensory &amp; formatting options
+                </p>
+                {sensoryPrefs.length > 0 ? (
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {sensoryPrefs.map((pref) => (
+                      <li
+                        key={pref}
+                        className="rounded-full border border-border bg-card px-3 py-1.5 text-sm font-semibold text-foreground"
+                      >
+                        {pref}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-3 font-display text-2xl font-bold text-foreground">
+                    None selected
+                  </p>
+                )}
+              </article>
+            </div>
+
+            <Button
+              type="button"
+              onClick={exportTeacherPass}
+              className="min-h-13 px-6 text-base font-semibold"
+            >
+              <Printer className="size-5" aria-hidden="true" />
+              Export Teacher Pass
+            </Button>
+          </div>
+        ) : null}
+
+        {activeTab === "History" ? (
+          <div key="history" className="no-profile-print animate-fade-in space-y-8">
+            <header>
+              <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
+                History
+              </h2>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                <Layers className="mr-2 inline size-4" aria-hidden="true" />
+                Your last 15 maps, saved on this device only.
+              </p>
+            </header>
+
+            {deck.length === 0 ? (
+              <p className="rounded-2xl border border-border bg-card p-8 text-base leading-relaxed text-muted-foreground shadow-sm">
+                Nothing saved yet. Generate a concept map and it will appear here.
+              </p>
+            ) : (
+              <Accordion type="single" collapsible className="space-y-4">
+                {deck.map((saved) => (
+                  <AccordionItem
+                    key={saved._id}
+                    value={saved._id}
+                    className="rounded-2xl border border-border bg-card px-6 shadow-sm"
+                  >
+                    <AccordionTrigger
+                      aria-label={`Saved map: ${saved._raw_concept || "concept map"}`}
+                      className="min-h-13 text-left text-lg font-bold"
+                    >
+                      {saved._raw_concept || "Saved concept map"}
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-6">
+                      {saved._cognitive_anchor ? (
+                        <p className="text-sm font-semibold text-accent-foreground">
+                          Anchor: {saved._cognitive_anchor}
+                        </p>
+                      ) : null}
+                      {saved.concept_summary ? (
+                        <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                          {saved.concept_summary}
+                        </p>
+                      ) : null}
+                      {Array.isArray(saved.mappings) && saved.mappings.length > 0 ? (
+                        <div className="mt-5 grid gap-5 md:grid-cols-2">
+                          {saved.mappings.map((mapping: any, index: number) => (
+                            <MappingCard key={index} mapping={mapping} index={index} />
+                          ))}
+                        </div>
+                      ) : null}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
+          </div>
+        ) : null}
+
+        {activeTab === "Research & Impact" ? (
+          <div key="research" className="no-profile-print animate-fade-in space-y-8">
+            <header>
+              <p className="inline-flex items-center gap-2 rounded-full bg-secondary/60 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-secondary-foreground">
+                <FileText className="size-3.5" aria-hidden="true" />
+                Research &amp; Impact
+              </p>
+              <h2 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-tight tracking-tight text-foreground">
+                The crisis behind school distress
+              </h2>
+            </header>
+
+            <div className="grid gap-6 sm:grid-cols-2">
+              <article className="rounded-3xl border border-border bg-gradient-to-br from-primary-soft to-card p-8 shadow-sm">
+                <p className="font-display text-6xl font-bold tracking-tight text-foreground">
+                  92.1%
+                </p>
+                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                  of students experiencing severe school distress are neurodivergent.
+                </p>
+              </article>
+              <article className="rounded-3xl border border-border bg-gradient-to-br from-highlight-soft to-card p-8 shadow-sm">
+                <p className="font-display text-6xl font-bold tracking-tight text-foreground">
+                  83.4%
+                </p>
+                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                  of those students are autistic.
+                </p>
+              </article>
+            </div>
+
+            <blockquote className="rounded-3xl border-l-4 border-l-primary border border-border bg-card p-8 text-lg leading-relaxed text-foreground shadow-sm">
+              Standard curricula assume a linear, executive-function-heavy path to understanding.
+              For many learners that path never opens. Hyper-Mapper bridges the gap by routing new
+              concepts through a system the learner already masters.
+              <footer className="mt-4 text-sm font-semibold text-muted-foreground">
+                — Connolly &amp; Mullally, 2023
+              </footer>
+            </blockquote>
+          </div>
+        ) : null}
+
+
 
         <div id="teacher-pass" className="hidden">
           <h2 className="font-display text-2xl font-bold">Teacher Pass — My Learning DNA</h2>
