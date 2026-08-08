@@ -30,6 +30,8 @@ import {
   Activity,
   Layers,
   FileText,
+  Upload,
+  FileCheck2,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { AppSidebar, type WorkspaceTab } from "@/components/app-sidebar";
@@ -286,6 +288,56 @@ function Index() {
   const [inputMode, setInputMode] = useState<"manual" | "paste">("manual");
   const [denseText, setDenseText] = useState("");
   const [extractNote, setExtractNote] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  function extractReadableText(raw: string) {
+    // Pull readable runs of text out of a raw byte string (works for the
+    // uncompressed text layer of simple PDFs and for plain documents).
+    const parenText = Array.from(raw.matchAll(/\(([^()\\]{2,})\)/g))
+      .map((match) => match[1])
+      .join(" ");
+    const source = parenText.length > 40 ? parenText : raw;
+    return source
+      .replace(/[^\x20-\x7E\n\r\t]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  async function handleFileUpload(file: File | null | undefined) {
+    if (!file) return;
+    setUploadError(null);
+    setUploadedFileName(null);
+    try {
+      const isPdf = /\.pdf$/i.test(file.name) || file.type === "application/pdf";
+      const text = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error("read-failed"));
+        reader.onload = () => resolve(String(reader.result ?? ""));
+        if (isPdf || /\.docx$/i.test(file.name)) {
+          reader.readAsBinaryString(file);
+        } else {
+          reader.readAsText(file);
+        }
+      });
+      const cleaned = isPdf || /\.docx$/i.test(file.name) ? extractReadableText(text) : text.trim();
+      setUploadedFileName(file.name);
+      if (cleaned.length > 30) {
+        setDenseText(cleaned.slice(0, 20000));
+        const firstSentence = (cleaned.split(/(?<=[.!?])\s+/)[0] ?? cleaned).trim();
+        setRawConcept(firstSentence.replace(/\s+/g, " ").slice(0, 240));
+        setExtractNote("Text pulled from your file. Edit the concept below if it needs trimming.");
+      } else {
+        setRawConcept(file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " "));
+        setUploadError(
+          "I could not read a text layer in that file, so I used the file name as a starting concept. Paste or type any extra detail below.",
+        );
+      }
+    } catch {
+      setUploadedFileName(file.name);
+      setUploadError("That file could not be read in the browser. Try pasting the text instead.");
+    }
+  }
 
   const deckStats = (() => {
     const total = deck.length;
@@ -538,20 +590,20 @@ function Index() {
         <AppSidebar activeTab={activeTab} onSelectTab={setActiveTab} />
         <SidebarInset className="bg-background">
         <SiteHeader withSidebarTrigger onOpenFeedback={() => setFeedbackOpen(true)} />
-        <main className="mx-auto w-full max-w-5xl px-5 py-10">
+        <main className="mx-auto w-full max-w-7xl px-6 py-10 lg:px-12">
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
         {activeTab === "Dashboard" ? (
-          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-5xl space-y-8">
+          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-7xl space-y-10">
         <section className="no-print overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-8 shadow-sm">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1.5 text-xs font-semibold text-accent-foreground">
             <Activity className="size-3.5" aria-hidden="true" />
             Cognitive Sync: Active
           </span>
-          <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
             Hyper-Mapper Core
           </h2>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          <p className="mt-4 max-w-3xl text-xl leading-relaxed text-muted-foreground lg:text-2xl">
             Translate any academic concept into the system your brain already knows by heart.
           </p>
         </section>
