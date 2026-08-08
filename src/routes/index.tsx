@@ -781,8 +781,14 @@ function Index() {
 
             <section aria-labelledby="mappings" className="mt-10">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h2 id="mappings" className="font-display text-xl font-bold text-foreground">
-                  Analogy mapping steps
+                <h2 id="mappings" className="font-display text-2xl font-bold text-foreground">
+                  {resultFormat === "Story Mode"
+                    ? "Your story"
+                    : resultFormat === "Bullet Points"
+                      ? "Key points"
+                      : resultFormat === "Flowchart"
+                        ? "Sequential workflow"
+                        : "Analogy mapping steps"}
                 </h2>
                 <div className="flex flex-wrap items-center gap-3">
                   <Button
