@@ -485,7 +485,7 @@ function Index() {
               {isFocusMode && result.mappings[activeCardIndex] ? (
                 <div className="mt-4">
                   <MappingCard mapping={result.mappings[activeCardIndex]!} index={activeCardIndex} />
-                  <div className="mt-5 flex items-center justify-between gap-3">
+                  <div className="no-print mt-5 flex items-center justify-between gap-3">
                     <Button
                       type="button"
                       variant="outline"
