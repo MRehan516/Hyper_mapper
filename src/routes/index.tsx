@@ -111,12 +111,12 @@ function Index() {
 
   function applyAnchorSuggestion(value: string) {
     setAnchor(value);
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       const input = anchorInputRef.current;
       if (!input) return;
       input.focus();
       input.setSelectionRange(value.length, value.length);
-    });
+    }, 0);
   }
 
   async function generate() {
