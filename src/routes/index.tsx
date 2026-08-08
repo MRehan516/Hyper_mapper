@@ -22,10 +22,19 @@ import {
   Contrast,
   Puzzle,
   MessageSquareHeart,
+  Printer,
+  Network,
+  BookOpen,
+  List,
+  GitBranch,
+  Activity,
+  Layers,
+  FileText,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar, type WorkspaceTab } from "@/components/app-sidebar";
 import { MappingCard } from "@/components/mapping-card";
+
 import { ErrorCard } from "@/components/error-card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -194,6 +203,14 @@ const sensoryOptions = [
   { value: "Break into Micro-Steps", label: "🧩 Break into Micro-Steps", icon: Puzzle },
 ];
 
+const formatOptions = [
+  { value: "Concept Map", icon: Network },
+  { value: "Story Mode", icon: BookOpen },
+  { value: "Bullet Points", icon: List },
+  { value: "Flowchart", icon: GitBranch },
+];
+
+
 
 function Index() {
   const [rawConcept, setRawConcept] = useState("");
@@ -235,6 +252,9 @@ function Index() {
   });
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [isPrintingProfile, setIsPrintingProfile] = useState(false);
+  const [activeTab, setActiveTab] = useState<WorkspaceTab>("Dashboard");
+  const [selectedFormat, setSelectedFormat] = useState("Concept Map");
+
   const anchorInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -363,7 +383,9 @@ function Index() {
     const cognitive_anchor = anchor.trim();
     const conceptText =
       raw_concept +
+      ` [Format as: ${selectedFormat}]` +
       (sensoryPrefs.length ? ` [Formatting constraints: ${sensoryPrefs.join(", ")}]` : "");
+
 
     const { data, error: fnError } = await supabase.functions.invoke("map-concept", {
       body: { raw_concept: conceptText, cognitive_anchor },
@@ -437,26 +459,34 @@ function Index() {
       <div
         className={`flex min-h-dvh w-full bg-background ${isPrintingProfile ? "printing-profile" : ""}`}
       >
-        <AppSidebar
-          deck={deck}
-          cognitiveAnchor={anchor}
-          sensoryPrefs={sensoryPrefs}
-          onExportTeacherPass={exportTeacherPass}
-        />
+        <AppSidebar activeTab={activeTab} onSelectTab={setActiveTab} />
         <SidebarInset className="bg-background">
         <SiteHeader withSidebarTrigger onOpenFeedback={() => setFeedbackOpen(true)} />
         <main className="mx-auto w-full max-w-5xl px-5 py-10">
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
+        {activeTab === "Dashboard" ? (
+          <div key="dashboard" className="animate-fade-in">
+        <section className="no-print mb-8 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-7 shadow-sm sm:p-9">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1.5 text-xs font-semibold text-accent-foreground">
+            <Activity className="size-3.5" aria-hidden="true" />
+            Cognitive Sync: Active
+          </span>
+          <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            Hyper-Mapper Core
+          </h2>
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
+            Translate any academic concept into the system your brain already knows by heart.
+          </p>
+        </section>
 
         <div className="no-print mb-6 flex flex-col items-center justify-center gap-2 rounded-lg bg-secondary/40 px-4 py-3 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
           <Brain className="size-4 shrink-0" aria-hidden="true" />
           <span>Designed for how your brain works — zero medical labels, zero diagnostic profiling required.</span>
         </div>
 
-
-
         <section
+
           aria-labelledby="step-one"
           className="no-print mx-auto w-full max-w-[700px] rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8"
         >
@@ -469,6 +499,33 @@ function Index() {
 
           <div className="mt-6 space-y-6">
             <div className="space-y-3">
+              <p className="text-base font-semibold text-foreground">Output format</p>
+              <div role="group" aria-label="Output format" className="flex flex-wrap gap-2">
+                {formatOptions.map((option) => {
+                  const Icon = option.icon;
+                  const selected = selectedFormat === option.value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => setSelectedFormat(option.value)}
+                      className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors ${
+                        selected
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-card text-foreground hover:border-primary hover:bg-secondary"
+                      }`}
+                    >
+                      <Icon className="size-4 shrink-0" aria-hidden="true" />
+                      <span>{option.value}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+
               <Label htmlFor="concept" className="text-base font-semibold">
                 Academic Concept to Learn
               </Label>
@@ -774,6 +831,162 @@ function Index() {
             ) : null}
           </>
         ) : null}
+          </div>
+        ) : null}
+
+        {activeTab === "My Learning DNA" ? (
+          <div key="dna" className="no-profile-print animate-fade-in space-y-8">
+            <header>
+              <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
+                My Learning DNA
+              </h2>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                Your cognitive profile — no diagnosis, no labels. Share it with a teacher in one page.
+              </p>
+            </header>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <article className="rounded-3xl border border-border bg-gradient-to-br from-primary-soft to-card p-8 shadow-sm">
+                <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                  Cognitive anchor
+                </p>
+                <p className="mt-3 font-display text-2xl font-bold leading-snug text-foreground">
+                  {anchor || "Not chosen yet"}
+                </p>
+              </article>
+              <article className="rounded-3xl border border-border bg-gradient-to-br from-highlight-soft to-card p-8 shadow-sm">
+                <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                  Sensory &amp; formatting options
+                </p>
+                {sensoryPrefs.length > 0 ? (
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {sensoryPrefs.map((pref) => (
+                      <li
+                        key={pref}
+                        className="rounded-full border border-border bg-card px-3 py-1.5 text-sm font-semibold text-foreground"
+                      >
+                        {pref}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-3 font-display text-2xl font-bold text-foreground">
+                    None selected
+                  </p>
+                )}
+              </article>
+            </div>
+
+            <Button
+              type="button"
+              onClick={exportTeacherPass}
+              className="min-h-13 px-6 text-base font-semibold"
+            >
+              <Printer className="size-5" aria-hidden="true" />
+              Export Teacher Pass
+            </Button>
+          </div>
+        ) : null}
+
+        {activeTab === "History" ? (
+          <div key="history" className="no-profile-print animate-fade-in space-y-8">
+            <header>
+              <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
+                History
+              </h2>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                <Layers className="mr-2 inline size-4" aria-hidden="true" />
+                Your last 15 maps, saved on this device only.
+              </p>
+            </header>
+
+            {deck.length === 0 ? (
+              <p className="rounded-2xl border border-border bg-card p-8 text-base leading-relaxed text-muted-foreground shadow-sm">
+                Nothing saved yet. Generate a concept map and it will appear here.
+              </p>
+            ) : (
+              <Accordion type="single" collapsible className="space-y-4">
+                {deck.map((saved) => (
+                  <AccordionItem
+                    key={saved._id}
+                    value={saved._id}
+                    className="rounded-2xl border border-border bg-card px-6 shadow-sm"
+                  >
+                    <AccordionTrigger
+                      aria-label={`Saved map: ${saved._raw_concept || "concept map"}`}
+                      className="min-h-13 text-left text-lg font-bold"
+                    >
+                      {saved._raw_concept || "Saved concept map"}
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-6">
+                      {saved._cognitive_anchor ? (
+                        <p className="text-sm font-semibold text-accent-foreground">
+                          Anchor: {saved._cognitive_anchor}
+                        </p>
+                      ) : null}
+                      {saved.concept_summary ? (
+                        <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                          {saved.concept_summary}
+                        </p>
+                      ) : null}
+                      {Array.isArray(saved.mappings) && saved.mappings.length > 0 ? (
+                        <div className="mt-5 grid gap-5 md:grid-cols-2">
+                          {saved.mappings.map((mapping: any, index: number) => (
+                            <MappingCard key={index} mapping={mapping} index={index} />
+                          ))}
+                        </div>
+                      ) : null}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
+          </div>
+        ) : null}
+
+        {activeTab === "Research & Impact" ? (
+          <div key="research" className="no-profile-print animate-fade-in space-y-8">
+            <header>
+              <p className="inline-flex items-center gap-2 rounded-full bg-secondary/60 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-secondary-foreground">
+                <FileText className="size-3.5" aria-hidden="true" />
+                Research &amp; Impact
+              </p>
+              <h2 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-tight tracking-tight text-foreground">
+                The crisis behind school distress
+              </h2>
+            </header>
+
+            <div className="grid gap-6 sm:grid-cols-2">
+              <article className="rounded-3xl border border-border bg-gradient-to-br from-primary-soft to-card p-8 shadow-sm">
+                <p className="font-display text-6xl font-bold tracking-tight text-foreground">
+                  92.1%
+                </p>
+                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                  of students experiencing severe school distress are neurodivergent.
+                </p>
+              </article>
+              <article className="rounded-3xl border border-border bg-gradient-to-br from-highlight-soft to-card p-8 shadow-sm">
+                <p className="font-display text-6xl font-bold tracking-tight text-foreground">
+                  83.4%
+                </p>
+                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                  of those students are autistic.
+                </p>
+              </article>
+            </div>
+
+            <blockquote className="rounded-3xl border-l-4 border-l-primary border border-border bg-card p-8 text-lg leading-relaxed text-foreground shadow-sm">
+              Standard curricula assume a linear, executive-function-heavy path to understanding.
+              For many learners that path never opens. Hyper-Mapper bridges the gap by routing new
+              concepts through a system the learner already masters.
+              <footer className="mt-4 text-sm font-semibold text-muted-foreground">
+                — Connolly &amp; Mullally, 2023
+              </footer>
+            </blockquote>
+          </div>
+        ) : null}
+
+
 
         <div id="teacher-pass" className="hidden">
           <h2 className="font-display text-2xl font-bold">Teacher Pass — My Learning DNA</h2>

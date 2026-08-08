@@ -1,117 +1,68 @@
-import { AlertTriangle, Dna, Layers, Printer } from "lucide-react";
+import { Home, Fingerprint, BookOpen, FileText, Brain } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { MappingCard } from "@/components/mapping-card";
+
+export type WorkspaceTab = "Dashboard" | "My Learning DNA" | "History" | "Research & Impact";
+
+const navItems: { label: WorkspaceTab; icon: typeof Home }[] = [
+  { label: "Dashboard", icon: Home },
+  { label: "My Learning DNA", icon: Fingerprint },
+  { label: "History", icon: BookOpen },
+  { label: "Research & Impact", icon: FileText },
+];
 
 export function AppSidebar({
-  deck,
-  cognitiveAnchor,
-  sensoryPrefs,
-  onExportTeacherPass,
+  activeTab,
+  onSelectTab,
 }: {
-  deck: any[];
-  cognitiveAnchor: string;
-  sensoryPrefs: string[];
-  onExportTeacherPass: () => void;
+  activeTab: WorkspaceTab;
+  onSelectTab: (tab: WorkspaceTab) => void;
 }) {
   return (
     <Sidebar className="no-print no-profile-print">
-      <SidebarContent className="gap-2">
+      <SidebarHeader>
+        <div className="flex items-center gap-3 px-2 py-3">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+            <Brain className="size-5" aria-hidden="true" />
+          </span>
+          <span className="font-display text-base font-bold tracking-tight text-foreground">
+            Hyper-Mapper
+          </span>
+        </div>
+      </SidebarHeader>
+      <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="gap-2 text-sm font-semibold">
-            <AlertTriangle className="size-4" aria-hidden="true" />
-            The Crisis
+          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wide">
+            Workspace
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <div className="rounded-xl border border-border bg-card p-4 text-sm leading-relaxed text-muted-foreground shadow-sm">
-              Research (Connolly &amp; Mullally, 2023) shows 92.1% of students experiencing severe
-              school distress are neurodivergent (83.4% autistic). Standard curricula trigger
-              executive dysfunction. Hyper-Mapper bridges this gap.
-            </div>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="gap-2 text-sm font-semibold">
-            <Dna className="size-4" aria-hidden="true" />
-            My Learning DNA
-          </SidebarGroupLabel>
-          <SidebarGroupContent className="space-y-3">
-            <div className="rounded-xl border border-border bg-card p-4 text-sm leading-relaxed shadow-sm">
-              <p className="font-semibold text-foreground">Cognitive anchor</p>
-              <p className="text-muted-foreground">{cognitiveAnchor || "Not chosen yet"}</p>
-              <p className="mt-3 font-semibold text-foreground">Sensory &amp; formatting</p>
-              <p className="text-muted-foreground">
-                {sensoryPrefs.length > 0 ? sensoryPrefs.join(", ") : "None selected"}
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onExportTeacherPass}
-              className="min-h-11 w-full text-sm font-semibold"
-            >
-              <Printer className="size-4" aria-hidden="true" />
-              Export Teacher Pass
-            </Button>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="gap-2 text-sm font-semibold">
-            <Layers className="size-4" aria-hidden="true" />
-            Saved Maps
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            {deck.length === 0 ? (
-              <p className="px-1 text-sm leading-relaxed text-muted-foreground">
-                Maps you generate are saved here on this device only.
-              </p>
-            ) : (
-              <Accordion type="single" collapsible>
-                {deck.map((saved) => (
-                  <AccordionItem key={saved._id} value={saved._id}>
-                    <AccordionTrigger
-                      aria-label={`Saved map: ${saved._raw_concept || "concept map"}`}
-                      className="min-h-11 text-left text-sm font-semibold"
+            <SidebarMenu>
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <SidebarMenuItem key={item.label}>
+                    <SidebarMenuButton
+                      isActive={activeTab === item.label}
+                      onClick={() => onSelectTab(item.label)}
+                      aria-current={activeTab === item.label ? "page" : undefined}
+                      className="min-h-11 gap-3 text-sm font-semibold"
                     >
-                      {saved._raw_concept || "Saved concept map"}
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      {saved._cognitive_anchor ? (
-                        <p className="text-sm font-semibold text-accent-foreground">
-                          Anchor: {saved._cognitive_anchor}
-                        </p>
-                      ) : null}
-                      {saved.concept_summary ? (
-                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                          {saved.concept_summary}
-                        </p>
-                      ) : null}
-                      {Array.isArray(saved.mappings) && saved.mappings.length > 0 ? (
-                        <div className="mt-4 grid gap-4">
-                          {saved.mappings.map((mapping: any, index: number) => (
-                            <MappingCard key={index} mapping={mapping} index={index} />
-                          ))}
-                        </div>
-                      ) : null}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            )}
+                      <Icon className="size-4 shrink-0" aria-hidden="true" />
+                      <span>{item.label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
