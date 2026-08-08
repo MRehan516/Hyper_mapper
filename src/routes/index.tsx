@@ -399,30 +399,74 @@ function Index() {
             </section>
 
             <section aria-labelledby="mappings" className="mt-10">
-              <h2 id="mappings" className="font-display text-xl font-bold text-foreground">
-                Analogy mapping steps
-              </h2>
-              <ul className="mt-4 grid gap-5 md:grid-cols-2">
-                {result.mappings?.map((mapping, index) => (
-                  <li
-                    key={`${mapping.concept_element}-${index}`}
-                    className="rounded-2xl border border-border bg-card p-6 shadow-sm"
-                  >
-                    <span className="inline-flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                      {index + 1}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <h2 id="mappings" className="font-display text-xl font-bold text-foreground">
+                  Analogy mapping steps
+                </h2>
+                <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm">
+                  <Switch
+                    id="focus-mode"
+                    checked={isFocusMode}
+                    onCheckedChange={setIsFocusMode}
+                  />
+                  <Label htmlFor="focus-mode" className="cursor-pointer text-sm font-medium">
+                    Focus Mode (One step at a time)
+                  </Label>
+                </div>
+              </div>
+
+              {isFocusMode ? (
+                <div className="mt-4">
+                  <MappingCard mapping={result.mappings[activeCardIndex]} index={activeCardIndex} />
+                  <div className="mt-5 flex items-center justify-between gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setActiveCardIndex((i) => Math.max(0, i - 1))}
+                      disabled={activeCardIndex === 0}
+                      className="min-h-11 px-4 text-sm font-semibold"
+                    >
+                      <ChevronLeft className="size-4" aria-hidden="true" />
+                      Previous Step
+                    </Button>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      Step {activeCardIndex + 1} of {result.mappings.length}
                     </span>
-                    <h3 className="mt-4 text-lg font-bold text-foreground">
-                      {mapping.concept_element}
-                    </h3>
-                    <p className="mt-1 text-sm font-semibold text-accent-foreground">
-                      ↳ {mapping.anchor_equivalent}
-                    </p>
-                    <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                      {mapping.explanation}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setActiveCardIndex((i) => Math.min(result.mappings.length - 1, i + 1))}
+                      disabled={activeCardIndex === result.mappings.length - 1}
+                      className="min-h-11 px-4 text-sm font-semibold"
+                    >
+                      Next Step
+                      <ChevronRight className="size-4" aria-hidden="true" />
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <ul className="mt-4 grid gap-5 md:grid-cols-2">
+                  {result.mappings?.map((mapping, index) => (
+                    <li
+                      key={`${mapping.concept_element}-${index}`}
+                      className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+                    >
+                      <span className="inline-flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                        {index + 1}
+                      </span>
+                      <h3 className="mt-4 text-lg font-bold text-foreground">
+                        {mapping.concept_element}
+                      </h3>
+                      <p className="mt-1 text-sm font-semibold text-accent-foreground">
+                        ↳ {mapping.anchor_equivalent}
+                      </p>
+                      <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                        {mapping.explanation}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
 
             {questions.length > 0 ? (
