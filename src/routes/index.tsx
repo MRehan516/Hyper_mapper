@@ -738,7 +738,7 @@ function Index() {
               type="button"
               onClick={generate}
               disabled={loading}
-              className="min-h-13 w-full py-3 text-base font-semibold"
+              className="min-h-14 w-full py-4 text-xl font-bold"
             >
               {loading ? (
                 <>
