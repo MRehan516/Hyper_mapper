@@ -231,11 +231,34 @@ function Index() {
               </Label>
               <Input
                 id="anchor"
+                ref={anchorInputRef}
                 value={anchor}
                 onChange={(event) => setAnchor(event.target.value)}
                 placeholder="e.g., Computer Logic Gates, City Transit Maps, Minecraft Redstone, Music Theory..."
                 className="min-h-12 text-base"
               />
+              <div
+                role="list"
+                aria-label="Anchor suggestions"
+                className="flex flex-wrap gap-2"
+              >
+                {anchorSuggestions.map((suggestion) => {
+                  const Icon = suggestion.icon;
+                  return (
+                    <button
+                      key={suggestion.value}
+                      type="button"
+                      role="listitem"
+                      onClick={() => applyAnchorSuggestion(suggestion.value)}
+                      aria-label={`Use anchor: ${suggestion.value}`}
+                      className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-border bg-card px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    >
+                      <Icon className="size-4 shrink-0" aria-hidden="true" />
+                      <span>{suggestion.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <Button
