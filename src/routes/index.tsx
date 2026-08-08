@@ -25,6 +25,12 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   supabase,
   isSupabaseConfigured,
   MISSING_CONFIG_MESSAGE,
@@ -197,7 +203,23 @@ function Index() {
   const [bridgeAnswer, setBridgeAnswer] = useState<number | null>(null);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [deck, setDeck] = useState<any[]>(() => {
+    try {
+      const saved = localStorage.getItem("hypermapper_deck");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const anchorInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("hypermapper_deck", JSON.stringify(deck));
+    } catch {
+      /* storage unavailable or full — deck stays in memory only */
+    }
+  }, [deck]);
 
   useEffect(() => {
     setActiveCardIndex(0);
@@ -265,6 +287,18 @@ function Index() {
 
     const payload = data.data as ConceptMapPayload;
     setResult(payload);
+    setDeck((prev) =>
+      [
+        {
+          ...payload,
+          _id: crypto.randomUUID(),
+          _raw_concept: raw_concept,
+          _cognitive_anchor: cognitive_anchor,
+          _saved_at: new Date().toISOString(),
+        },
+        ...prev,
+      ].slice(0, 15),
+    );
     setLoading(false);
 
     const { data: inserted, error: insertError } = await supabase
@@ -586,6 +620,46 @@ function Index() {
               />
             ) : null}
           </>
+        ) : null}
+
+        {deck.length > 0 ? (
+          <section aria-labelledby="saved-maps-heading" className="mt-12">
+            <h2 id="saved-maps-heading" className="text-xl font-bold text-foreground">
+              Your Saved Maps
+            </h2>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              Your last {deck.length} concept {deck.length === 1 ? "map" : "maps"}, kept on this
+              device only.
+            </p>
+            <Accordion type="single" collapsible className="mt-4">
+              {deck.map((saved) => (
+                <AccordionItem key={saved._id} value={saved._id}>
+                  <AccordionTrigger className="min-h-11 text-left text-base font-semibold">
+                    {saved._raw_concept || "Saved concept map"}
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    {saved._cognitive_anchor ? (
+                      <p className="text-sm font-semibold text-accent-foreground">
+                        Anchor: {saved._cognitive_anchor}
+                      </p>
+                    ) : null}
+                    {saved.concept_summary ? (
+                      <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                        {saved.concept_summary}
+                      </p>
+                    ) : null}
+                    {Array.isArray(saved.mappings) && saved.mappings.length > 0 ? (
+                      <div className="mt-4 grid gap-4">
+                        {saved.mappings.map((mapping: any, index: number) => (
+                          <MappingCard key={index} mapping={mapping} index={index} />
+                        ))}
+                      </div>
+                    ) : null}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </section>
         ) : null}
       </main>
     </div>
