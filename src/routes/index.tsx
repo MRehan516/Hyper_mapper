@@ -547,7 +547,7 @@ function Index() {
                     return (
                       <li
                         key={`${question.question}-${questionIndex}`}
-                        className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+                        className="print-card rounded-2xl border border-border bg-card p-6 shadow-sm"
                       >
                         <p className="text-base font-semibold leading-relaxed text-foreground">
                           {questionIndex + 1}. {question.question}
