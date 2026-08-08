@@ -502,8 +502,66 @@ function Index() {
             Tell us what you are learning and the system you already understand deeply.
           </p>
 
-
           <div className="mt-6 space-y-6">
+            <div className="space-y-3">
+              <div role="group" aria-label="Input mode" className="flex flex-wrap gap-2">
+                {([
+                  { value: "manual" as const, label: "Type it myself", icon: Sparkles },
+                  { value: "paste" as const, label: "Paste Dense Text / Syllabus", icon: FileText },
+                ]).map((mode) => {
+                  const Icon = mode.icon;
+                  const selected = inputMode === mode.value;
+                  return (
+                    <button
+                      key={mode.value}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => setInputMode(mode.value)}
+                      className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors ${
+                        selected
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-card text-foreground hover:border-primary hover:bg-secondary"
+                      }`}
+                    >
+                      <Icon className="size-4 shrink-0" aria-hidden="true" />
+                      <span>{mode.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {inputMode === "paste" ? (
+                <div className="space-y-3 rounded-2xl border border-border bg-secondary/30 p-6">
+                  <Label htmlFor="dense-text" className="text-base font-semibold">
+                    Paste a paragraph or syllabus snippet
+                  </Label>
+                  <Textarea
+                    id="dense-text"
+                    rows={6}
+                    value={denseText}
+                    onChange={(event) => setDenseText(event.target.value)}
+                    placeholder="Paste the reading, assignment brief, or syllabus section here..."
+                    className="text-base leading-relaxed"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={autoExtract}
+                    className="min-h-11 text-sm font-semibold"
+                  >
+                    <Sparkles className="size-4" aria-hidden="true" />
+                    Auto-Extract Concept &amp; Anchor
+                  </Button>
+                  {extractNote ? (
+                    <p aria-live="polite" className="text-sm leading-relaxed text-muted-foreground">
+                      {extractNote}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+
+
             <div className="space-y-3">
               <p className="text-base font-semibold text-foreground">Output format</p>
               <div role="group" aria-label="Output format" className="flex flex-wrap gap-2">
