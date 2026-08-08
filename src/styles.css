@@ -244,5 +244,16 @@ body {
   .print-card {
     border: 1px solid #999 !important;
   }
+
+  /* Teacher Pass: print only the learner profile block. */
+  .printing-profile main > *:not(#teacher-pass),
+  .printing-profile .no-profile-print {
+    display: none !important;
+  }
+
+  .printing-profile #teacher-pass {
+    display: block !important;
+  }
 }
+
 
