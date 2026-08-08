@@ -254,6 +254,52 @@ function Index() {
   const [isPrintingProfile, setIsPrintingProfile] = useState(false);
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("Dashboard");
   const [selectedFormat, setSelectedFormat] = useState("Concept Map");
+  const [inputMode, setInputMode] = useState<"manual" | "paste">("manual");
+  const [denseText, setDenseText] = useState("");
+  const [extractNote, setExtractNote] = useState<string | null>(null);
+
+  const deckStats = (() => {
+    const total = deck.length;
+    const anchors = deck
+      .map((item) => String(item?._cognitive_anchor ?? "").trim())
+      .filter(Boolean);
+    const counts = new Map<string, number>();
+    for (const anchorValue of anchors) {
+      const category = categorizeAnchor(anchorValue);
+      counts.set(category, (counts.get(category) ?? 0) + 1);
+    }
+    let topCategory = "Not enough data yet";
+    let best = 0;
+    for (const [category, count] of counts) {
+      if (count > best) {
+        best = count;
+        topCategory = category;
+      }
+    }
+    return {
+      total,
+      topCategory,
+      distinctAnchors: new Set(anchors.map((a) => a.toLowerCase())).size,
+    };
+  })();
+
+  function autoExtract() {
+    const text = denseText.trim();
+    if (!text) {
+      setExtractNote("Paste some text first and I will pull the core concept out of it.");
+      return;
+    }
+    const firstSentence = (text.split(/(?<=[.!?])\s+/)[0] ?? text).trim();
+    const concept = firstSentence.replace(/\s+/g, " ").slice(0, 240);
+    setRawConcept(concept);
+    const detected = categorizeAnchor(text);
+    if (!anchor.trim() && detected !== "Not enough data yet") {
+      setAnchor(`${detected} — `);
+    }
+    setExtractNote("Concept extracted into the field below. Edit it if it needs trimming.");
+    setInputMode("manual");
+  }
+
 
   const anchorInputRef = useRef<HTMLInputElement>(null);
 
