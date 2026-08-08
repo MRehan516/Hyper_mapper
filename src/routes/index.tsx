@@ -177,6 +177,13 @@ const anchorSuggestions = [
   { icon: Clapperboard, label: "A show I love", value: "TV/Movie plots — " },
 ];
 
+const sensoryOptions = [
+  { value: "Short Sentences", label: "⚡ Short Sentences", icon: Zap },
+  { value: "Plain Language (No Jargon)", label: "🌱 Plain Language (No Jargon)", icon: Sprout },
+  { value: "High Visual Contrast", label: "🎯 High Visual Contrast", icon: Contrast },
+  { value: "Break into Micro-Steps", label: "🧩 Break into Micro-Steps", icon: Puzzle },
+];
+
 function MappingCard({
   mapping,
   index,
