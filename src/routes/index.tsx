@@ -626,7 +626,7 @@ function Index() {
 
 
             <div className="space-y-3">
-              <p className="text-base font-semibold text-foreground">Output format</p>
+              <p className="text-xl font-bold text-foreground">Output format</p>
               <div role="group" aria-label="Output format" className="flex flex-wrap gap-2">
                 {formatOptions.map((option) => {
                   const Icon = option.icon;
