@@ -836,6 +836,71 @@ function Index() {
                     </Button>
                   </div>
                 </div>
+              ) : resultFormat === "Story Mode" ? (
+                <article className="print-card mt-4 rounded-2xl border border-border bg-card p-8 shadow-sm">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-accent-foreground">
+                    Story mode
+                  </p>
+                  <div className="mt-4 space-y-5">
+                    {result.mappings?.map((mapping, index) => (
+                      <p
+                        key={`${mapping.concept_element}-${index}`}
+                        className="text-xl leading-relaxed text-foreground"
+                      >
+                        <span className="font-bold">{mapping.concept_element}</span>{" "}
+                        <span className="font-semibold text-accent-foreground">
+                          ({mapping.anchor_equivalent})
+                        </span>{" "}
+                        — {mapping.explanation}
+                      </p>
+                    ))}
+                  </div>
+                </article>
+              ) : resultFormat === "Bullet Points" ? (
+                <ul className="print-card mt-4 space-y-4 rounded-2xl border border-border bg-card p-8 shadow-sm">
+                  {result.mappings?.map((mapping, index) => (
+                    <li
+                      key={`${mapping.concept_element}-${index}`}
+                      className="flex gap-3 text-lg leading-relaxed text-foreground"
+                    >
+                      <span aria-hidden="true" className="mt-1 text-primary">
+                        •
+                      </span>
+                      <span>
+                        <span className="font-bold">{mapping.concept_element}</span> ={" "}
+                        <span className="font-semibold text-accent-foreground">
+                          {mapping.anchor_equivalent}
+                        </span>
+                        <span className="block text-base text-muted-foreground">
+                          {mapping.explanation}
+                        </span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : resultFormat === "Flowchart" ? (
+                <ol className="mt-4 space-y-3">
+                  {result.mappings?.map((mapping, index) => (
+                    <li key={`${mapping.concept_element}-${index}`}>
+                      <div className="print-card rounded-2xl border-2 border-primary/40 bg-card p-6 shadow-sm">
+                        <p className="text-sm font-bold uppercase tracking-wide text-accent-foreground">
+                          Step {index + 1}
+                        </p>
+                        <h3 className="mt-2 text-xl font-bold text-foreground">
+                          {mapping.concept_element} → {mapping.anchor_equivalent}
+                        </h3>
+                        <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                          {mapping.explanation}
+                        </p>
+                      </div>
+                      {index < (result.mappings?.length ?? 0) - 1 ? (
+                        <div aria-hidden="true" className="py-2 text-center text-2xl text-primary">
+                          ↓
+                        </div>
+                      ) : null}
+                    </li>
+                  ))}
+                </ol>
               ) : (
                 <ul className="mt-4 grid gap-5 md:grid-cols-2">
                   {result.mappings?.map((mapping, index) => (
