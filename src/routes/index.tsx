@@ -16,6 +16,7 @@ import {
   Brain,
   ChevronLeft,
   ChevronRight,
+  Download,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { ErrorCard } from "@/components/error-card";
