@@ -252,6 +252,9 @@ function Index() {
   });
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [isPrintingProfile, setIsPrintingProfile] = useState(false);
+  const [activeTab, setActiveTab] = useState<WorkspaceTab>("Dashboard");
+  const [selectedFormat, setSelectedFormat] = useState("Concept Map");
+
   const anchorInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
