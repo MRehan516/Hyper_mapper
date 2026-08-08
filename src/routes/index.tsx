@@ -210,6 +210,23 @@ const formatOptions = [
   { value: "Flowchart", icon: GitBranch },
 ];
 
+const anchorCategories: { label: string; keywords: string[] }[] = [
+  { label: "Video games", keywords: ["game", "gaming", "minecraft", "redstone", "roblox", "fortnite", "console"] },
+  { label: "Sports", keywords: ["sport", "soccer", "football", "basketball", "team", "coach", "match"] },
+  { label: "Cooking", keywords: ["cook", "bak", "recipe", "kitchen", "chef", "ingredient"] },
+  { label: "Transit systems", keywords: ["transit", "train", "subway", "metro", "bus", "traffic", "route"] },
+  { label: "Music", keywords: ["music", "song", "beat", "guitar", "piano", "band", "producer"] },
+  { label: "Film & TV", keywords: ["show", "movie", "tv", "film", "anime", "plot", "series"] },
+  { label: "Computer logic", keywords: ["logic", "computer", "code", "circuit", "gate", "program", "algorithm"] },
+];
+
+function categorizeAnchor(value: string) {
+  const text = value.toLowerCase();
+  for (const category of anchorCategories) {
+    if (category.keywords.some((keyword) => text.includes(keyword))) return category.label;
+  }
+  return "Not enough data yet";
+}
 
 
 function Index() {
@@ -254,6 +271,52 @@ function Index() {
   const [isPrintingProfile, setIsPrintingProfile] = useState(false);
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("Dashboard");
   const [selectedFormat, setSelectedFormat] = useState("Concept Map");
+  const [inputMode, setInputMode] = useState<"manual" | "paste">("manual");
+  const [denseText, setDenseText] = useState("");
+  const [extractNote, setExtractNote] = useState<string | null>(null);
+
+  const deckStats = (() => {
+    const total = deck.length;
+    const anchors = deck
+      .map((item) => String(item?._cognitive_anchor ?? "").trim())
+      .filter(Boolean);
+    const counts = new Map<string, number>();
+    for (const anchorValue of anchors) {
+      const category = categorizeAnchor(anchorValue);
+      counts.set(category, (counts.get(category) ?? 0) + 1);
+    }
+    let topCategory = "Not enough data yet";
+    let best = 0;
+    for (const [category, count] of counts) {
+      if (count > best) {
+        best = count;
+        topCategory = category;
+      }
+    }
+    return {
+      total,
+      topCategory,
+      distinctAnchors: new Set(anchors.map((a) => a.toLowerCase())).size,
+    };
+  })();
+
+  function autoExtract() {
+    const text = denseText.trim();
+    if (!text) {
+      setExtractNote("Paste some text first and I will pull the core concept out of it.");
+      return;
+    }
+    const firstSentence = (text.split(/(?<=[.!?])\s+/)[0] ?? text).trim();
+    const concept = firstSentence.replace(/\s+/g, " ").slice(0, 240);
+    setRawConcept(concept);
+    const detected = categorizeAnchor(text);
+    if (!anchor.trim() && detected !== "Not enough data yet") {
+      setAnchor(`${detected} — `);
+    }
+    setExtractNote("Concept extracted into the field below. Edit it if it needs trimming.");
+    setInputMode("manual");
+  }
+
 
   const anchorInputRef = useRef<HTMLInputElement>(null);
 
@@ -466,8 +529,8 @@ function Index() {
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
         {activeTab === "Dashboard" ? (
-          <div key="dashboard" className="animate-fade-in">
-        <section className="no-print mb-8 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-7 shadow-sm sm:p-9">
+          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-3xl space-y-8">
+        <section className="no-print overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-8 shadow-sm">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1.5 text-xs font-semibold text-accent-foreground">
             <Activity className="size-3.5" aria-hidden="true" />
             Cognitive Sync: Active
@@ -480,15 +543,20 @@ function Index() {
           </p>
         </section>
 
-        <div className="no-print mb-6 flex flex-col items-center justify-center gap-2 rounded-lg bg-secondary/40 px-4 py-3 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
-          <Brain className="size-4 shrink-0" aria-hidden="true" />
-          <span>Designed for how your brain works — zero medical labels, zero diagnostic profiling required.</span>
+        <div className="no-print space-y-3">
+          <div className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-secondary/40 px-8 py-6 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
+            <Brain className="size-4 shrink-0" aria-hidden="true" />
+            <span>Designed for how your brain works — zero medical labels, zero diagnostic profiling required.</span>
+          </div>
+          <p className="mx-auto max-w-2xl text-center text-xs leading-relaxed text-muted-foreground">
+            <span className="font-semibold text-accent-foreground">Layout Spec:</span> Enforces 32px
+            Cognitive Padding to prevent visual crowding and sensory overload.
+          </p>
         </div>
 
         <section
-
           aria-labelledby="step-one"
-          className="no-print mx-auto w-full max-w-[700px] rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8"
+          className="no-print w-full rounded-2xl border border-border bg-card p-8 shadow-sm"
         >
           <h2 id="step-one" className="font-display text-2xl font-bold text-foreground">
             Build your concept map
@@ -498,6 +566,65 @@ function Index() {
           </p>
 
           <div className="mt-6 space-y-6">
+            <div className="space-y-3">
+              <div role="group" aria-label="Input mode" className="flex flex-wrap gap-2">
+                {([
+                  { value: "manual" as const, label: "Type it myself", icon: Sparkles },
+                  { value: "paste" as const, label: "Paste Dense Text / Syllabus", icon: FileText },
+                ]).map((mode) => {
+                  const Icon = mode.icon;
+                  const selected = inputMode === mode.value;
+                  return (
+                    <button
+                      key={mode.value}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => setInputMode(mode.value)}
+                      className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors ${
+                        selected
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-card text-foreground hover:border-primary hover:bg-secondary"
+                      }`}
+                    >
+                      <Icon className="size-4 shrink-0" aria-hidden="true" />
+                      <span>{mode.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {inputMode === "paste" ? (
+                <div className="space-y-3 rounded-2xl border border-border bg-secondary/30 p-6">
+                  <Label htmlFor="dense-text" className="text-base font-semibold">
+                    Paste a paragraph or syllabus snippet
+                  </Label>
+                  <Textarea
+                    id="dense-text"
+                    rows={6}
+                    value={denseText}
+                    onChange={(event) => setDenseText(event.target.value)}
+                    placeholder="Paste the reading, assignment brief, or syllabus section here..."
+                    className="text-base leading-relaxed"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={autoExtract}
+                    className="min-h-11 text-sm font-semibold"
+                  >
+                    <Sparkles className="size-4" aria-hidden="true" />
+                    Auto-Extract Concept &amp; Anchor
+                  </Button>
+                  {extractNote ? (
+                    <p aria-live="polite" className="text-sm leading-relaxed text-muted-foreground">
+                      {extractNote}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+
+
             <div className="space-y-3">
               <p className="text-base font-semibold text-foreground">Output format</p>
               <div role="group" aria-label="Output format" className="flex flex-wrap gap-2">
@@ -629,7 +756,7 @@ function Index() {
         </section>
 
         {error ? (
-          <div className="mx-auto mt-8 w-full max-w-[700px]">
+          <div className="w-full">
             <ErrorCard message={error} onRetry={generate} />
           </div>
         ) : null}
@@ -876,6 +1003,52 @@ function Index() {
                 )}
               </article>
             </div>
+
+            <section
+              aria-labelledby="pattern-intelligence"
+              className="rounded-3xl border border-border bg-card p-8 shadow-sm"
+            >
+              <p className="inline-flex items-center gap-2 rounded-full bg-secondary/60 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-secondary-foreground">
+                <Activity className="size-3.5" aria-hidden="true" />
+                Local pattern intelligence
+              </p>
+              <h3
+                id="pattern-intelligence"
+                className="mt-4 font-display text-2xl font-bold text-foreground"
+              >
+                Autonomous Behavioral Adaptation
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Derived locally from your usage patterns. Nothing leaves this device.
+              </p>
+
+              <div className="mt-6 grid gap-5 sm:grid-cols-3">
+                <div className="rounded-2xl border border-border bg-gradient-to-br from-primary-soft to-card p-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                    Maps generated
+                  </p>
+                  <p className="mt-2 font-display text-4xl font-bold text-foreground">
+                    {deckStats.total}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-border bg-gradient-to-br from-highlight-soft to-card p-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                    Top anchor category
+                  </p>
+                  <p className="mt-2 font-display text-2xl font-bold leading-snug text-foreground">
+                    {deckStats.topCategory}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-border bg-gradient-to-br from-secondary to-card p-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
+                    Distinct anchors used
+                  </p>
+                  <p className="mt-2 font-display text-4xl font-bold text-foreground">
+                    {deckStats.distinctAnchors}
+                  </p>
+                </div>
+              </div>
+            </section>
 
             <Button
               type="button"
