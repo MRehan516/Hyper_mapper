@@ -757,164 +757,142 @@ function Index() {
           </>
         ) : null}
 
-        {result ? (
-          <section aria-labelledby="session-feedback" className="no-print mt-12">
-            <h2 id="session-feedback" className="font-display text-xl font-bold text-foreground">
+        <div id="teacher-pass" className="hidden">
+          <h2 className="font-display text-2xl font-bold">Teacher Pass — My Learning DNA</h2>
+          <p className="mt-4 text-base">
+            <strong>Cognitive anchor:</strong> {anchor || "Not chosen yet"}
+          </p>
+          <p className="mt-2 text-base">
+            <strong>Sensory &amp; formatting options:</strong>{" "}
+            {sensoryPrefs.length > 0 ? sensoryPrefs.join(", ") : "None selected"}
+          </p>
+        </div>
+        </main>
+        </SidebarInset>
+      </div>
+
+      <Dialog open={feedbackOpen} onOpenChange={setFeedbackOpen}>
+        <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl font-bold">
               <MessageSquareHeart className="mr-2 inline size-5 text-primary" aria-hidden="true" />
               Feedback on this conversation
-            </h2>
-            <div className="mt-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="fb-id" className="text-base font-semibold">
-                    Tester ID
-                  </Label>
-                  <Input
-                    id="fb-id"
-                    value={feedbackTesterId}
-                    onChange={(event) => setFeedbackTesterId(event.target.value)}
-                    placeholder="e.g., NNEA-014"
-                    className="min-h-12 text-base"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="fb-email" className="text-base font-semibold">
-                    Email address
-                  </Label>
-                  <Input
-                    id="fb-email"
-                    type="email"
-                    value={feedbackEmail}
-                    onChange={(event) => setFeedbackEmail(event.target.value)}
-                    placeholder="you@example.com"
-                    className="min-h-12 text-base"
-                  />
-                </div>
-              </div>
+            </DialogTitle>
+            <DialogDescription>
+              Your ratings help us reduce cognitive friction for the next learner.
+            </DialogDescription>
+          </DialogHeader>
 
-              <div className="mt-5 grid gap-5 sm:grid-cols-2">
-                {[
-                  { label: "Clarity (1-5)", value: feedbackClarity, set: setFeedbackClarity, name: "clarity" },
-                  { label: "Friction reduced (1-5)", value: feedbackFriction, set: setFeedbackFriction, name: "friction" },
-                ].map((group) => (
-                  <div key={group.name} className="space-y-2">
-                    <p className="text-base font-semibold text-foreground">{group.label}</p>
-                    <div role="group" aria-label={group.label} className="flex flex-wrap gap-2">
-                      {[1, 2, 3, 4, 5].map((rating) => (
-                        <button
-                          key={rating}
-                          type="button"
-                          aria-pressed={group.value === rating}
-                          onClick={() => group.set(rating)}
-                          className={`inline-flex size-11 items-center justify-center rounded-full border-2 text-sm font-bold transition-colors ${
-                            group.value === rating
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border bg-card text-foreground hover:bg-secondary"
-                          }`}
-                        >
-                          {rating}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5 space-y-2">
-                <Label htmlFor="fb-notes" className="text-base font-semibold">
-                  Notes (optional)
-                </Label>
-                <Textarea
-                  id="fb-notes"
-                  rows={3}
-                  value={feedbackNotes}
-                  onChange={(event) => setFeedbackNotes(event.target.value)}
-                  placeholder="What worked, what felt confusing?"
-                  className="text-base leading-relaxed"
-                />
-              </div>
-
-              {feedbackError ? (
-                <p
-                  role="alert"
-                  className="mt-4 rounded-xl border-2 border-destructive bg-destructive-soft px-4 py-3 text-sm font-medium text-foreground"
-                >
-                  {feedbackError}
-                </p>
-              ) : null}
-
-              <Button
-                type="button"
-                onClick={submitSessionFeedback}
-                disabled={feedbackSaving}
-                className="mt-5 min-h-12 w-full text-base font-semibold sm:w-auto sm:px-6"
-              >
-                {feedbackSaving ? "Saving feedback..." : "Submit feedback"}
-              </Button>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="fb-id" className="text-base font-semibold">
+                Tester ID
+              </Label>
+              <Input
+                id="fb-id"
+                value={feedbackTesterId}
+                onChange={(event) => setFeedbackTesterId(event.target.value)}
+                placeholder="e.g., NNEA-014"
+                className="min-h-12 text-base"
+              />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="fb-email" className="text-base font-semibold">
+                Email address
+              </Label>
+              <Input
+                id="fb-email"
+                type="email"
+                value={feedbackEmail}
+                onChange={(event) => setFeedbackEmail(event.target.value)}
+                placeholder="you@example.com"
+                className="min-h-12 text-base"
+              />
+            </div>
+          </div>
 
-            {sessionFeedback.length > 0 ? (
-              <ul aria-live="polite" className="mt-5 space-y-4">
-                {sessionFeedback.map((entry) => (
-                  <li key={entry.id} className="rounded-2xl border border-border bg-card p-5 shadow-sm">
-                    <p className="text-base font-bold text-foreground">{entry.tester_id}</p>
-                    <p className="text-sm text-muted-foreground">{entry.tester_email}</p>
-                    <p className="mt-2 text-sm font-semibold text-accent-foreground">
-                      Clarity: {entry.clarity ?? "—"}/5 · Friction reduced: {entry.friction ?? "—"}/5
-                    </p>
-                    {entry.notes ? (
-                      <p className="mt-2 text-base leading-relaxed text-muted-foreground">{entry.notes}</p>
-                    ) : null}
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      {new Date(entry.at).toLocaleString()}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </section>
-        ) : null}
+          <div className="grid gap-5 sm:grid-cols-2">
+            {[
+              { label: "Clarity (1-5)", value: feedbackClarity, set: setFeedbackClarity, name: "clarity" },
+              { label: "Friction reduced (1-5)", value: feedbackFriction, set: setFeedbackFriction, name: "friction" },
+            ].map((group) => (
+              <div key={group.name} className="space-y-2">
+                <p className="text-base font-semibold text-foreground">{group.label}</p>
+                <div role="group" aria-label={group.label} className="flex flex-wrap gap-2">
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <button
+                      key={rating}
+                      type="button"
+                      aria-pressed={group.value === rating}
+                      onClick={() => group.set(rating)}
+                      className={`inline-flex size-11 items-center justify-center rounded-full border-2 text-sm font-bold transition-colors ${
+                        group.value === rating
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-card text-foreground hover:bg-secondary"
+                      }`}
+                    >
+                      {rating}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
 
-        {deck.length > 0 ? (
-          <section aria-labelledby="saved-maps-heading" className="no-print mt-12">
-            <h2 id="saved-maps-heading" className="text-xl font-bold text-foreground">
-              Your Saved Maps
-            </h2>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-              Your last {deck.length} concept {deck.length === 1 ? "map" : "maps"}, kept on this
-              device only.
+          <div className="space-y-2">
+            <Label htmlFor="fb-notes" className="text-base font-semibold">
+              Notes (optional)
+            </Label>
+            <Textarea
+              id="fb-notes"
+              rows={3}
+              value={feedbackNotes}
+              onChange={(event) => setFeedbackNotes(event.target.value)}
+              placeholder="What worked, what felt confusing?"
+              className="text-base leading-relaxed"
+            />
+          </div>
+
+          {feedbackError ? (
+            <p
+              role="alert"
+              className="rounded-xl border-2 border-destructive bg-destructive-soft px-4 py-3 text-sm font-medium text-foreground"
+            >
+              {feedbackError}
             </p>
-            <Accordion type="single" collapsible className="mt-4">
-              {deck.map((saved) => (
-                <AccordionItem key={saved._id} value={saved._id}>
-                  <AccordionTrigger className="min-h-11 text-left text-base font-semibold">
-                    {saved._raw_concept || "Saved concept map"}
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    {saved._cognitive_anchor ? (
-                      <p className="text-sm font-semibold text-accent-foreground">
-                        Anchor: {saved._cognitive_anchor}
-                      </p>
-                    ) : null}
-                    {saved.concept_summary ? (
-                      <p className="mt-2 text-base leading-relaxed text-muted-foreground">
-                        {saved.concept_summary}
-                      </p>
-                    ) : null}
-                    {Array.isArray(saved.mappings) && saved.mappings.length > 0 ? (
-                      <div className="mt-4 grid gap-4">
-                        {saved.mappings.map((mapping: any, index: number) => (
-                          <MappingCard key={index} mapping={mapping} index={index} />
-                        ))}
-                      </div>
-                    ) : null}
-                  </AccordionContent>
-                </AccordionItem>
+          ) : null}
+
+          <Button
+            type="button"
+            onClick={submitSessionFeedback}
+            disabled={feedbackSaving}
+            className="min-h-12 w-full text-base font-semibold"
+          >
+            {feedbackSaving ? "Saving feedback..." : "Submit feedback"}
+          </Button>
+
+          {sessionFeedback.length > 0 ? (
+            <ul aria-live="polite" className="space-y-4">
+              {sessionFeedback.map((entry) => (
+                <li key={entry.id} className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+                  <p className="text-base font-bold text-foreground">{entry.tester_id}</p>
+                  <p className="text-sm text-muted-foreground">{entry.tester_email}</p>
+                  <p className="mt-2 text-sm font-semibold text-accent-foreground">
+                    Clarity: {entry.clarity ?? "—"}/5 · Friction reduced: {entry.friction ?? "—"}/5
+                  </p>
+                  {entry.notes ? (
+                    <p className="mt-2 text-base leading-relaxed text-muted-foreground">{entry.notes}</p>
+                  ) : null}
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {new Date(entry.at).toLocaleString()}
+                  </p>
+                </li>
               ))}
-            </Accordion>
-          </section>
-        ) : null}
-      </main>
-    </div>
+            </ul>
+          ) : null}
+        </DialogContent>
+      </Dialog>
+    </SidebarProvider>
   );
 }
+
