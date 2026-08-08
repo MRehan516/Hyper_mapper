@@ -653,7 +653,7 @@ function Index() {
 
             <div className="space-y-3">
 
-              <Label htmlFor="concept" className="text-base font-semibold">
+              <Label htmlFor="concept" className="text-xl font-bold">
                 Academic Concept to Learn
               </Label>
               <Textarea
@@ -662,12 +662,12 @@ function Index() {
                 value={rawConcept}
                 onChange={(event) => setRawConcept(event.target.value)}
                 placeholder="e.g., Photosynthesis, Electromagnetism, Cell Division..."
-                className="text-base leading-relaxed"
+                className="p-5 text-2xl leading-relaxed"
               />
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="anchor" className="text-base font-semibold">
+              <Label htmlFor="anchor" className="text-xl font-bold">
                 Your Preferred Cognitive Anchor
               </Label>
               <Input
@@ -676,7 +676,7 @@ function Index() {
                 value={anchor}
                 onChange={(event) => setAnchor(event.target.value)}
                 placeholder="e.g., Computer Logic Gates, City Transit Maps, Minecraft Redstone, Music Theory..."
-                className="min-h-12 text-base"
+                className="min-h-16 p-5 text-2xl md:text-2xl"
               />
               <div
                 role="list"
