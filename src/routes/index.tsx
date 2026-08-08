@@ -233,7 +233,24 @@ function Index() {
       return [];
     }
   });
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [isPrintingProfile, setIsPrintingProfile] = useState(false);
   const anchorInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const onAfterPrint = () => setIsPrintingProfile(false);
+    window.addEventListener("afterprint", onAfterPrint);
+    return () => window.removeEventListener("afterprint", onAfterPrint);
+  }, []);
+
+  function exportTeacherPass() {
+    setIsPrintingProfile(true);
+    requestAnimationFrame(() => {
+      window.print();
+      setIsPrintingProfile(false);
+    });
+  }
+
 
   useEffect(() => {
     try {
