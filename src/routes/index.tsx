@@ -210,6 +210,23 @@ const formatOptions = [
   { value: "Flowchart", icon: GitBranch },
 ];
 
+const anchorCategories: { label: string; keywords: string[] }[] = [
+  { label: "Video games", keywords: ["game", "gaming", "minecraft", "redstone", "roblox", "fortnite", "console"] },
+  { label: "Sports", keywords: ["sport", "soccer", "football", "basketball", "team", "coach", "match"] },
+  { label: "Cooking", keywords: ["cook", "bak", "recipe", "kitchen", "chef", "ingredient"] },
+  { label: "Transit systems", keywords: ["transit", "train", "subway", "metro", "bus", "traffic", "route"] },
+  { label: "Music", keywords: ["music", "song", "beat", "guitar", "piano", "band", "producer"] },
+  { label: "Film & TV", keywords: ["show", "movie", "tv", "film", "anime", "plot", "series"] },
+  { label: "Computer logic", keywords: ["logic", "computer", "code", "circuit", "gate", "program", "algorithm"] },
+];
+
+function categorizeAnchor(value: string) {
+  const text = value.toLowerCase();
+  for (const category of anchorCategories) {
+    if (category.keywords.some((keyword) => text.includes(keyword))) return category.label;
+  }
+  return "Not enough data yet";
+}
 
 
 function Index() {
