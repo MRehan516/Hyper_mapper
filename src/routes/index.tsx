@@ -203,6 +203,14 @@ const sensoryOptions = [
   { value: "Break into Micro-Steps", label: "🧩 Break into Micro-Steps", icon: Puzzle },
 ];
 
+const formatOptions = [
+  { value: "Concept Map", icon: Network },
+  { value: "Story Mode", icon: BookOpen },
+  { value: "Bullet Points", icon: List },
+  { value: "Flowchart", icon: GitBranch },
+];
+
+
 
 function Index() {
   const [rawConcept, setRawConcept] = useState("");
