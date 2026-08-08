@@ -529,7 +529,7 @@ function Index() {
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
         {activeTab === "Dashboard" ? (
-          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-3xl space-y-8">
+          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-5xl space-y-8">
         <section className="no-print overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-8 shadow-sm">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1.5 text-xs font-semibold text-accent-foreground">
             <Activity className="size-3.5" aria-hidden="true" />
