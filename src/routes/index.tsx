@@ -278,6 +278,61 @@ function Index() {
     }, 0);
   }
 
+  function toggleSensoryPref(value: string) {
+    setSensoryPrefs((prev) =>
+      prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value],
+    );
+  }
+
+  async function submitSessionFeedback() {
+    setFeedbackError(null);
+    if (!feedbackTesterId.trim() || !feedbackEmail.trim()) {
+      setFeedbackError("Please add your tester ID and email address.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(feedbackEmail.trim())) {
+      setFeedbackError("Please enter a valid email address.");
+      return;
+    }
+
+    setFeedbackSaving(true);
+    const { data, error: insertError } = await supabase
+      .from("tester_feedback")
+      .insert({
+        session_id: sessionId,
+        tester_type: feedbackTesterId.trim(),
+        tester_id: feedbackTesterId.trim(),
+        tester_email: feedbackEmail.trim(),
+        clarity_rating: feedbackClarity,
+        cognitive_friction_reduction_rating: feedbackFriction,
+        qualitative_notes: feedbackNotes.trim() || null,
+      })
+      .select("id, created_at")
+      .maybeSingle();
+    setFeedbackSaving(false);
+
+    if (insertError) {
+      setFeedbackError(insertError.message);
+      return;
+    }
+
+    setSessionFeedback((prev) => [
+      {
+        id: (data?.id as string) ?? crypto.randomUUID(),
+        tester_id: feedbackTesterId.trim(),
+        tester_email: feedbackEmail.trim(),
+        clarity: feedbackClarity,
+        friction: feedbackFriction,
+        notes: feedbackNotes.trim(),
+        at: (data?.created_at as string) ?? new Date().toISOString(),
+      },
+      ...prev,
+    ]);
+    setFeedbackNotes("");
+    setFeedbackClarity(null);
+    setFeedbackFriction(null);
+  }
+
   async function generate() {
     setError(null);
     setResult(null);
