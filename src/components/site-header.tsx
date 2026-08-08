@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { Brain, Moon, Sun, MessageSquareHeart, Home } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
+import { InstallButton } from "@/components/install-button";
+
 
 export function SiteHeader() {
   const { isDark, toggle } = useTheme();
@@ -38,7 +40,9 @@ export function SiteHeader() {
               <span className="hidden sm:inline">Tester feedback</span>
             </Link>
           </Button>
+          <InstallButton />
           <Button
+
             type="button"
             variant="outline"
             onClick={toggle}
