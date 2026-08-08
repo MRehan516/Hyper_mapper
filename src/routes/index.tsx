@@ -459,15 +459,26 @@ function Index() {
                 <h2 id="mappings" className="font-display text-xl font-bold text-foreground">
                   Analogy mapping steps
                 </h2>
-                <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm">
-                  <Switch
-                    id="focus-mode"
-                    checked={isFocusMode}
-                    onCheckedChange={setIsFocusMode}
-                  />
-                  <Label htmlFor="focus-mode" className="cursor-pointer text-sm font-medium">
-                    Focus Mode (One step at a time)
-                  </Label>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => window.print()}
+                    className="no-print min-h-11 px-4 text-sm font-semibold"
+                  >
+                    <Download className="size-4" aria-hidden="true" />
+                    Download as Study Sheet
+                  </Button>
+                  <div className="no-print flex items-center gap-3 rounded-xl border border-border bg-card p-3 shadow-sm">
+                    <Switch
+                      id="focus-mode"
+                      checked={isFocusMode}
+                      onCheckedChange={setIsFocusMode}
+                    />
+                    <Label htmlFor="focus-mode" className="cursor-pointer text-sm font-medium">
+                      Focus Mode (One step at a time)
+                    </Label>
+                  </div>
                 </div>
               </div>
 
