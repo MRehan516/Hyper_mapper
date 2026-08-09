@@ -623,10 +623,10 @@ function Index() {
           aria-labelledby="step-one"
           className="no-print w-full rounded-2xl border border-border bg-card p-8 shadow-sm"
         >
-          <h2 id="step-one" className="font-display text-2xl font-bold text-foreground">
+          <h2 id="step-one" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
             Build your concept map
           </h2>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-3 text-xl leading-relaxed text-muted-foreground lg:text-2xl">
             Tell us what you are learning and the system you already understand deeply.
           </p>
 
@@ -658,9 +658,49 @@ function Index() {
                 })}
               </div>
 
+              <div className="space-y-4 rounded-2xl border-2 border-dashed border-border bg-secondary/20 p-6">
+                <Label htmlFor="file-upload" className="text-2xl font-bold lg:text-3xl">
+                  Upload a document
+                </Label>
+                <p className="text-lg leading-relaxed text-muted-foreground">
+                  PDF, TXT, MD, or DOCX. The text is read right here in your browser — nothing is
+                  uploaded anywhere.
+                </p>
+                <div className="flex items-center gap-3">
+                  <Upload className="size-6 shrink-0 text-primary" aria-hidden="true" />
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept=".pdf,.txt,.md,.docx"
+                    onChange={(event) => {
+                      void handleFileUpload(event.target.files?.[0]);
+                      event.target.value = "";
+                    }}
+                    className="block w-full cursor-pointer rounded-xl border-2 border-border bg-card p-4 text-lg font-semibold text-foreground file:mr-4 file:min-h-11 file:cursor-pointer file:rounded-full file:border-0 file:bg-primary file:px-5 file:py-2 file:text-base file:font-bold file:text-primary-foreground"
+                  />
+                </div>
+                {uploadedFileName && !uploadError ? (
+                  <p
+                    aria-live="polite"
+                    className="inline-flex items-center gap-2 rounded-full bg-success-soft px-4 py-2 text-lg font-bold text-success"
+                  >
+                    <FileCheck2 className="size-5 shrink-0" aria-hidden="true" />
+                    File loaded: {uploadedFileName} — Ready to map
+                  </p>
+                ) : null}
+                {uploadError ? (
+                  <p
+                    aria-live="polite"
+                    className="rounded-xl bg-highlight-soft px-4 py-3 text-lg font-semibold leading-relaxed text-foreground"
+                  >
+                    {uploadError}
+                  </p>
+                ) : null}
+              </div>
+
               {inputMode === "paste" ? (
-                <div className="space-y-3 rounded-2xl border border-border bg-secondary/30 p-6">
-                  <Label htmlFor="dense-text" className="text-base font-semibold">
+                <div className="space-y-4 rounded-2xl border border-border bg-secondary/30 p-6">
+                  <Label htmlFor="dense-text" className="text-2xl font-bold lg:text-3xl">
                     Paste a paragraph or syllabus snippet
                   </Label>
                   <Textarea
@@ -669,19 +709,19 @@ function Index() {
                     value={denseText}
                     onChange={(event) => setDenseText(event.target.value)}
                     placeholder="Paste the reading, assignment brief, or syllabus section here..."
-                    className="text-base leading-relaxed"
+                    className="p-6 text-2xl leading-relaxed lg:text-3xl"
                   />
                   <Button
                     type="button"
                     variant="outline"
                     onClick={autoExtract}
-                    className="min-h-11 text-sm font-semibold"
+                    className="min-h-14 px-8 py-6 text-xl font-bold"
                   >
-                    <Sparkles className="size-4" aria-hidden="true" />
+                    <Sparkles className="size-5" aria-hidden="true" />
                     Auto-Extract Concept &amp; Anchor
                   </Button>
                   {extractNote ? (
-                    <p aria-live="polite" className="text-sm leading-relaxed text-muted-foreground">
+                    <p aria-live="polite" className="text-lg leading-relaxed text-muted-foreground">
                       {extractNote}
                     </p>
                   ) : null}
