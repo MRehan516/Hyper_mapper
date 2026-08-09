@@ -387,31 +387,14 @@ function Index() {
     setDeck([]);
   }
 
-  const deckStats = (() => {
-    const total = deck.length;
+  function formatSavedAt(value: unknown) {
+    const raw = typeof value === "string" ? value : "";
+    if (!raw) return "—";
+    const date = new Date(raw);
+    if (Number.isNaN(date.getTime())) return "—";
+    return date.toLocaleString();
+  }
 
-    const anchors = deck
-      .map((item) => String(item?._cognitive_anchor ?? "").trim())
-      .filter(Boolean);
-    const counts = new Map<string, number>();
-    for (const anchorValue of anchors) {
-      const category = categorizeAnchor(anchorValue);
-      counts.set(category, (counts.get(category) ?? 0) + 1);
-    }
-    let topCategory = "Not enough data yet";
-    let best = 0;
-    for (const [category, count] of counts) {
-      if (count > best) {
-        best = count;
-        topCategory = category;
-      }
-    }
-    return {
-      total,
-      topCategory,
-      distinctAnchors: new Set(anchors.map((a) => a.toLowerCase())).size,
-    };
-  })();
 
   function autoExtract() {
     const text = denseText.trim();
