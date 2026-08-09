@@ -30,6 +30,8 @@ import {
   Activity,
   Layers,
   FileText,
+  Upload,
+  FileCheck2,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { AppSidebar, type WorkspaceTab } from "@/components/app-sidebar";
@@ -286,6 +288,56 @@ function Index() {
   const [inputMode, setInputMode] = useState<"manual" | "paste">("manual");
   const [denseText, setDenseText] = useState("");
   const [extractNote, setExtractNote] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  function extractReadableText(raw: string) {
+    // Pull readable runs of text out of a raw byte string (works for the
+    // uncompressed text layer of simple PDFs and for plain documents).
+    const parenText = Array.from(raw.matchAll(/\(([^()\\]{2,})\)/g))
+      .map((match) => match[1])
+      .join(" ");
+    const source = parenText.length > 40 ? parenText : raw;
+    return source
+      .replace(/[^\x20-\x7E\n\r\t]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  async function handleFileUpload(file: File | null | undefined) {
+    if (!file) return;
+    setUploadError(null);
+    setUploadedFileName(null);
+    try {
+      const isPdf = /\.pdf$/i.test(file.name) || file.type === "application/pdf";
+      const text = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error("read-failed"));
+        reader.onload = () => resolve(String(reader.result ?? ""));
+        if (isPdf || /\.docx$/i.test(file.name)) {
+          reader.readAsBinaryString(file);
+        } else {
+          reader.readAsText(file);
+        }
+      });
+      const cleaned = isPdf || /\.docx$/i.test(file.name) ? extractReadableText(text) : text.trim();
+      setUploadedFileName(file.name);
+      if (cleaned.length > 30) {
+        setDenseText(cleaned.slice(0, 20000));
+        const firstSentence = (cleaned.split(/(?<=[.!?])\s+/)[0] ?? cleaned).trim();
+        setRawConcept(firstSentence.replace(/\s+/g, " ").slice(0, 240));
+        setExtractNote("Text pulled from your file. Edit the concept below if it needs trimming.");
+      } else {
+        setRawConcept(file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " "));
+        setUploadError(
+          "I could not read a text layer in that file, so I used the file name as a starting concept. Paste or type any extra detail below.",
+        );
+      }
+    } catch {
+      setUploadedFileName(file.name);
+      setUploadError("That file could not be read in the browser. Try pasting the text instead.");
+    }
+  }
 
   const deckStats = (() => {
     const total = deck.length;
@@ -538,20 +590,20 @@ function Index() {
         <AppSidebar activeTab={activeTab} onSelectTab={setActiveTab} />
         <SidebarInset className="bg-background">
         <SiteHeader withSidebarTrigger onOpenFeedback={() => setFeedbackOpen(true)} />
-        <main className="mx-auto w-full max-w-5xl px-5 py-10">
+        <main className="mx-auto w-full max-w-7xl px-6 py-10 lg:px-12">
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
         {activeTab === "Dashboard" ? (
-          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-5xl space-y-8">
+          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-7xl space-y-10">
         <section className="no-print overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-8 shadow-sm">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1.5 text-xs font-semibold text-accent-foreground">
             <Activity className="size-3.5" aria-hidden="true" />
             Cognitive Sync: Active
           </span>
-          <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
             Hyper-Mapper Core
           </h2>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
+          <p className="mt-4 max-w-3xl text-xl leading-relaxed text-muted-foreground lg:text-2xl">
             Translate any academic concept into the system your brain already knows by heart.
           </p>
         </section>
@@ -571,10 +623,10 @@ function Index() {
           aria-labelledby="step-one"
           className="no-print w-full rounded-2xl border border-border bg-card p-8 shadow-sm"
         >
-          <h2 id="step-one" className="font-display text-2xl font-bold text-foreground">
+          <h2 id="step-one" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
             Build your concept map
           </h2>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-3 text-xl leading-relaxed text-muted-foreground lg:text-2xl">
             Tell us what you are learning and the system you already understand deeply.
           </p>
 
@@ -606,9 +658,49 @@ function Index() {
                 })}
               </div>
 
+              <div className="space-y-4 rounded-2xl border-2 border-dashed border-border bg-secondary/20 p-6">
+                <Label htmlFor="file-upload" className="text-2xl font-bold lg:text-3xl">
+                  Upload a document
+                </Label>
+                <p className="text-lg leading-relaxed text-muted-foreground">
+                  PDF, TXT, MD, or DOCX. The text is read right here in your browser — nothing is
+                  uploaded anywhere.
+                </p>
+                <div className="flex items-center gap-3">
+                  <Upload className="size-6 shrink-0 text-primary" aria-hidden="true" />
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept=".pdf,.txt,.md,.docx"
+                    onChange={(event) => {
+                      void handleFileUpload(event.target.files?.[0]);
+                      event.target.value = "";
+                    }}
+                    className="block w-full cursor-pointer rounded-xl border-2 border-border bg-card p-4 text-lg font-semibold text-foreground file:mr-4 file:min-h-11 file:cursor-pointer file:rounded-full file:border-0 file:bg-primary file:px-5 file:py-2 file:text-base file:font-bold file:text-primary-foreground"
+                  />
+                </div>
+                {uploadedFileName && !uploadError ? (
+                  <p
+                    aria-live="polite"
+                    className="inline-flex items-center gap-2 rounded-full bg-success-soft px-4 py-2 text-lg font-bold text-success"
+                  >
+                    <FileCheck2 className="size-5 shrink-0" aria-hidden="true" />
+                    File loaded: {uploadedFileName} — Ready to map
+                  </p>
+                ) : null}
+                {uploadError ? (
+                  <p
+                    aria-live="polite"
+                    className="rounded-xl bg-highlight-soft px-4 py-3 text-lg font-semibold leading-relaxed text-foreground"
+                  >
+                    {uploadError}
+                  </p>
+                ) : null}
+              </div>
+
               {inputMode === "paste" ? (
-                <div className="space-y-3 rounded-2xl border border-border bg-secondary/30 p-6">
-                  <Label htmlFor="dense-text" className="text-base font-semibold">
+                <div className="space-y-4 rounded-2xl border border-border bg-secondary/30 p-6">
+                  <Label htmlFor="dense-text" className="text-2xl font-bold lg:text-3xl">
                     Paste a paragraph or syllabus snippet
                   </Label>
                   <Textarea
@@ -617,19 +709,19 @@ function Index() {
                     value={denseText}
                     onChange={(event) => setDenseText(event.target.value)}
                     placeholder="Paste the reading, assignment brief, or syllabus section here..."
-                    className="text-base leading-relaxed"
+                    className="p-6 text-2xl leading-relaxed lg:text-3xl"
                   />
                   <Button
                     type="button"
                     variant="outline"
                     onClick={autoExtract}
-                    className="min-h-11 text-sm font-semibold"
+                    className="min-h-14 px-8 py-6 text-xl font-bold"
                   >
-                    <Sparkles className="size-4" aria-hidden="true" />
+                    <Sparkles className="size-5" aria-hidden="true" />
                     Auto-Extract Concept &amp; Anchor
                   </Button>
                   {extractNote ? (
-                    <p aria-live="polite" className="text-sm leading-relaxed text-muted-foreground">
+                    <p aria-live="polite" className="text-lg leading-relaxed text-muted-foreground">
                       {extractNote}
                     </p>
                   ) : null}
@@ -639,7 +731,7 @@ function Index() {
 
 
             <div className="space-y-3">
-              <p className="text-xl font-bold text-foreground">Output format</p>
+              <p className="text-2xl font-bold text-foreground lg:text-3xl">Output format</p>
               <div role="group" aria-label="Output format" className="flex flex-wrap gap-2">
                 {formatOptions.map((option) => {
                   const Icon = option.icon;
@@ -666,7 +758,7 @@ function Index() {
 
             <div className="space-y-3">
 
-              <Label htmlFor="concept" className="text-xl font-bold">
+              <Label htmlFor="concept" className="text-2xl font-bold lg:text-3xl">
                 Academic Concept to Learn
               </Label>
               <Textarea
@@ -675,12 +767,12 @@ function Index() {
                 value={rawConcept}
                 onChange={(event) => setRawConcept(event.target.value)}
                 placeholder="e.g., Photosynthesis, Electromagnetism, Cell Division..."
-                className="p-5 text-2xl leading-relaxed"
+                className="p-6 text-2xl leading-relaxed lg:text-3xl"
               />
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="anchor" className="text-xl font-bold">
+              <Label htmlFor="anchor" className="text-2xl font-bold lg:text-3xl">
                 Your Preferred Cognitive Anchor
               </Label>
               <Input
@@ -689,7 +781,7 @@ function Index() {
                 value={anchor}
                 onChange={(event) => setAnchor(event.target.value)}
                 placeholder="e.g., Computer Logic Gates, City Transit Maps, Minecraft Redstone, Music Theory..."
-                className="min-h-16 p-5 text-2xl md:text-2xl"
+                className="min-h-20 p-6 text-2xl md:text-2xl lg:text-3xl"
               />
               <div
                 role="list"
@@ -717,7 +809,7 @@ function Index() {
 
             <Accordion type="single" collapsible className="rounded-xl border border-border">
               <AccordionItem value="sensory" className="border-b-0">
-                <AccordionTrigger className="min-h-11 px-4 text-left text-base font-semibold">
+                <AccordionTrigger className="min-h-14 px-4 text-left text-xl font-bold lg:text-2xl">
                   Sensory &amp; Formatting Options (Optional)
                 </AccordionTrigger>
                 <AccordionContent className="px-4">
@@ -751,7 +843,7 @@ function Index() {
               type="button"
               onClick={generate}
               disabled={loading}
-              className="min-h-14 w-full py-4 text-xl font-bold"
+              className="min-h-16 w-full px-8 py-6 text-2xl font-bold"
             >
               {loading ? (
                 <>
@@ -779,7 +871,7 @@ function Index() {
         {result ? (
           <>
             <section aria-labelledby="summary" className="mt-10">
-              <h2 id="summary" className="font-display text-2xl font-bold text-foreground">
+              <h2 id="summary" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
                 Your concept map
               </h2>
               <div className="print-card mt-4 rounded-2xl border-2 border-highlight/50 bg-highlight-soft p-6 shadow-sm">
@@ -794,7 +886,7 @@ function Index() {
 
             <section aria-labelledby="mappings" className="mt-10">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h2 id="mappings" className="font-display text-2xl font-bold text-foreground">
+                <h2 id="mappings" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
                   {resultFormat === "Story Mode"
                     ? "Your story"
                     : resultFormat === "Bullet Points"
@@ -947,7 +1039,7 @@ function Index() {
 
             {questions.length > 0 ? (
               <section aria-labelledby="quiz" className="mt-10">
-                <h2 id="quiz" className="font-display text-xl font-bold text-foreground">
+                <h2 id="quiz" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
                   Quick comprehension check
                 </h2>
                 <ol className="mt-4 space-y-6">
@@ -1048,7 +1140,7 @@ function Index() {
         {activeTab === "My Learning DNA" ? (
           <div key="dna" className="no-profile-print animate-fade-in space-y-8">
             <header>
-              <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
+              <h2 className="font-display text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
                 My Learning DNA
               </h2>
               <p className="mt-2 text-base leading-relaxed text-muted-foreground">
@@ -1148,7 +1240,7 @@ function Index() {
         {activeTab === "History" ? (
           <div key="history" className="no-profile-print animate-fade-in space-y-8">
             <header>
-              <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
+              <h2 className="font-display text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
                 History
               </h2>
               <p className="mt-2 text-base leading-relaxed text-muted-foreground">
@@ -1208,7 +1300,7 @@ function Index() {
                 <FileText className="size-3.5" aria-hidden="true" />
                 Research &amp; Impact
               </p>
-              <h2 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-tight tracking-tight text-foreground">
+              <h2 className="mt-4 max-w-4xl font-display text-4xl font-extrabold leading-tight tracking-tight text-foreground lg:text-5xl">
                 The crisis behind school distress
               </h2>
             </header>
