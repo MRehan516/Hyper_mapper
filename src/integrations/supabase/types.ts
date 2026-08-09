@@ -96,7 +96,33 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_mapping_session: {
+        Args: {
+          p_cognitive_anchor: string
+          p_raw_concept: string
+          p_structured_output: Json
+        }
+        Returns: {
+          id: string
+          session_token: string
+        }[]
+      }
+      set_comprehension_score: {
+        Args: { p_score: number; p_session_id: string; p_session_token: string }
+        Returns: boolean
+      }
+      submit_tester_feedback: {
+        Args: {
+          p_clarity_rating: number
+          p_friction_rating: number
+          p_notes: string
+          p_session_id: string
+          p_tester_email?: string
+          p_tester_id?: string
+          p_tester_type: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

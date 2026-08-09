@@ -115,11 +115,12 @@ function TesterFeedbackPage() {
     }
 
     setSubmitting(true);
-    const { error: insertError } = await supabase.from("tester_feedback").insert({
-      tester_identifier: identifier,
-      clarity_rating: clarity,
-      friction_reduction_rating: friction,
-      qualitative_notes: notes,
+    const { error: insertError } = await supabase.rpc("submit_tester_feedback", {
+      p_session_id: null,
+      p_tester_type: identifier,
+      p_clarity_rating: clarity,
+      p_friction_rating: friction,
+      p_notes: notes.trim() || null,
     });
     setSubmitting(false);
 
