@@ -84,10 +84,11 @@ export function SiteHeader({
             </span>
           </Button>
         </div>
-
+      </div>
+      <div className="px-6 pb-3 sm:hidden">
         <Link
           to="/"
-          className="flex items-center gap-2 rounded-full bg-primary-soft px-4 py-2 text-xs font-semibold text-accent-foreground transition-colors hover:bg-primary/20 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring sm:hidden"
+          className="inline-flex items-center gap-2 rounded-full bg-primary-soft px-4 py-2 text-xs font-semibold text-accent-foreground transition-colors hover:bg-primary/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
           aria-label="Return to the concept mapper home page"
         >
           <Home className="size-3.5" aria-hidden="true" />
