@@ -871,7 +871,7 @@ function Index() {
         {result ? (
           <>
             <section aria-labelledby="summary" className="mt-10">
-              <h2 id="summary" className="font-display text-2xl font-bold text-foreground">
+              <h2 id="summary" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
                 Your concept map
               </h2>
               <div className="print-card mt-4 rounded-2xl border-2 border-highlight/50 bg-highlight-soft p-6 shadow-sm">
@@ -886,7 +886,7 @@ function Index() {
 
             <section aria-labelledby="mappings" className="mt-10">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h2 id="mappings" className="font-display text-2xl font-bold text-foreground">
+                <h2 id="mappings" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
                   {resultFormat === "Story Mode"
                     ? "Your story"
                     : resultFormat === "Bullet Points"
@@ -1039,7 +1039,7 @@ function Index() {
 
             {questions.length > 0 ? (
               <section aria-labelledby="quiz" className="mt-10">
-                <h2 id="quiz" className="font-display text-xl font-bold text-foreground">
+                <h2 id="quiz" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
                   Quick comprehension check
                 </h2>
                 <ol className="mt-4 space-y-6">
@@ -1300,7 +1300,7 @@ function Index() {
                 <FileText className="size-3.5" aria-hidden="true" />
                 Research &amp; Impact
               </p>
-              <h2 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-tight tracking-tight text-foreground">
+              <h2 className="mt-4 max-w-4xl font-display text-4xl font-extrabold leading-tight tracking-tight text-foreground lg:text-5xl">
                 The crisis behind school distress
               </h2>
             </header>
