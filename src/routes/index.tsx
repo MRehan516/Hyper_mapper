@@ -32,6 +32,9 @@ import {
   FileText,
   Upload,
   FileCheck2,
+  Trash2,
+  X,
+
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { AppSidebar, type WorkspaceTab } from "@/components/app-sidebar";
