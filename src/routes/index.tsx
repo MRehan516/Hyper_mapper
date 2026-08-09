@@ -311,6 +311,8 @@ function Index() {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("Dashboard");
   const [selectedFormat, setSelectedFormat] = useState("Concept Map");
   const [resultFormat, setResultFormat] = useState("Concept Map");
+  const [resultPrefs, setResultPrefs] = useState<string[]>([]);
+
   const [inputMode, setInputMode] = useState<"manual" | "paste">("manual");
   const [denseText, setDenseText] = useState("");
   const [extractNote, setExtractNote] = useState<string | null>(null);
