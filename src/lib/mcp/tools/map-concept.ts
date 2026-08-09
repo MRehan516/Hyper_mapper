@@ -52,7 +52,7 @@ export default defineTool({
 
     return {
       content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],
-      structuredContent: { session_id: inserted?.id ?? null, concept_map: payload },
+      structuredContent: { session_id: row?.id ?? null, concept_map: payload },
     };
   },
 });
