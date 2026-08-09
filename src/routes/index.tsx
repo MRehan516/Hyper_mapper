@@ -1140,7 +1140,7 @@ function Index() {
         {activeTab === "My Learning DNA" ? (
           <div key="dna" className="no-profile-print animate-fade-in space-y-8">
             <header>
-              <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
+              <h2 className="font-display text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
                 My Learning DNA
               </h2>
               <p className="mt-2 text-base leading-relaxed text-muted-foreground">
@@ -1240,7 +1240,7 @@ function Index() {
         {activeTab === "History" ? (
           <div key="history" className="no-profile-print animate-fade-in space-y-8">
             <header>
-              <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
+              <h2 className="font-display text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
                 History
               </h2>
               <p className="mt-2 text-base leading-relaxed text-muted-foreground">
