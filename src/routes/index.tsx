@@ -699,22 +699,46 @@ function Index() {
                   />
                 </div>
                 {uploadedFileName && !uploadError ? (
-                  <p
-                    aria-live="polite"
-                    className="inline-flex items-center gap-2 rounded-full bg-success-soft px-4 py-2 text-xl font-bold text-success lg:text-2xl"
-                  >
-                    <FileCheck2 className="size-5 shrink-0" aria-hidden="true" />
-                    File loaded: {uploadedFileName} — Ready to map
-                  </p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <p
+                      aria-live="polite"
+                      className="inline-flex items-center gap-2 rounded-full bg-success-soft px-4 py-2 text-xl font-bold text-success lg:text-2xl"
+                    >
+                      <FileCheck2 className="size-5 shrink-0" aria-hidden="true" />
+                      File loaded: {uploadedFileName} — Ready to map
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={clearUploadedFile}
+                      aria-label={`Remove file ${uploadedFileName}`}
+                      className="min-h-14 gap-2 px-6 text-xl font-bold lg:text-2xl"
+                    >
+                      <X className="size-5" aria-hidden="true" />
+                      Remove file
+                    </Button>
+                  </div>
                 ) : null}
                 {uploadError ? (
-                  <p
-                    aria-live="polite"
-                    className="rounded-xl bg-highlight-soft px-4 py-3 text-xl font-semibold leading-relaxed text-foreground lg:text-2xl"
-                  >
-                    {uploadError}
-                  </p>
+                  <div className="space-y-3">
+                    <p
+                      aria-live="polite"
+                      className="rounded-xl bg-highlight-soft px-4 py-3 text-xl font-semibold leading-relaxed text-foreground lg:text-2xl"
+                    >
+                      {uploadError}
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={clearUploadedFile}
+                      className="min-h-14 gap-2 px-6 text-xl font-bold lg:text-2xl"
+                    >
+                      <X className="size-5" aria-hidden="true" />
+                      Clear file
+                    </Button>
+                  </div>
                 ) : null}
+
               </div>
 
               {inputMode === "paste" ? (
