@@ -754,15 +754,32 @@ function Index() {
                     placeholder="Paste the reading, assignment brief, or syllabus section here..."
                     className="w-full p-6 text-3xl leading-relaxed"
                   />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={autoExtract}
-                    className="min-h-16 px-8 py-6 text-3xl font-extrabold"
-                  >
-                    <Sparkles className="size-5" aria-hidden="true" />
-                    Auto-Extract Concept &amp; Anchor
-                  </Button>
+                  <div className="flex flex-wrap gap-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={autoExtract}
+                      className="min-h-16 px-8 py-6 text-3xl font-extrabold"
+                    >
+                      <Sparkles className="size-5" aria-hidden="true" />
+                      Auto-Extract Concept &amp; Anchor
+                    </Button>
+                    {denseText ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => {
+                          setDenseText("");
+                          setExtractNote(null);
+                        }}
+                        className="min-h-16 px-8 py-6 text-3xl font-extrabold"
+                      >
+                        <X className="size-5" aria-hidden="true" />
+                        Clear text
+                      </Button>
+                    ) : null}
+                  </div>
+
                   {extractNote ? (
                     <p aria-live="polite" className="text-xl leading-relaxed text-muted-foreground lg:text-2xl">
                       {extractNote}
