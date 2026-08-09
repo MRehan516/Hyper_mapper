@@ -1421,33 +1421,19 @@ function Index() {
               </h2>
             </header>
 
-            <div className="grid gap-6 sm:grid-cols-2">
-              <article className="rounded-3xl border border-border bg-gradient-to-br from-primary-soft to-card p-8 shadow-sm">
-                <p className="font-display text-6xl font-bold tracking-tight text-foreground">
-                  92.1%
-                </p>
-                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                  of students experiencing severe school distress are neurodivergent.
-                </p>
-              </article>
-              <article className="rounded-3xl border border-border bg-gradient-to-br from-highlight-soft to-card p-8 shadow-sm">
-                <p className="font-display text-6xl font-bold tracking-tight text-foreground">
-                  83.4%
-                </p>
-                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                  of those students are autistic.
-                </p>
-              </article>
-            </div>
+            <article className="rounded-3xl border border-border border-l-4 border-l-primary bg-card p-8 text-lg leading-relaxed text-foreground shadow-sm">
+              <p>
+                According to Connolly, Constable &amp; Mullally (2023, Frontiers in Psychiatry),
+                92.1% of students experiencing severe school distress are neurodivergent (83.4%
+                autistic). Standard educational environments demand high working memory, which
+                frequently triggers executive dysfunction. Hyper-Mapper is built to bridge this
+                accessibility gap.
+              </p>
+              <p className="mt-4 text-sm font-semibold text-muted-foreground">
+                — Connolly, Constable &amp; Mullally (2023), Frontiers in Psychiatry
+              </p>
+            </article>
 
-            <blockquote className="rounded-3xl border-l-4 border-l-primary border border-border bg-card p-8 text-lg leading-relaxed text-foreground shadow-sm">
-              Standard curricula assume a linear, executive-function-heavy path to understanding.
-              For many learners that path never opens. Hyper-Mapper bridges the gap by routing new
-              concepts through a system the learner already masters.
-              <footer className="mt-4 text-sm font-semibold text-muted-foreground">
-                — Connolly &amp; Mullally, 2023
-              </footer>
-            </blockquote>
           </div>
         ) : null}
 
