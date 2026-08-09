@@ -619,6 +619,9 @@ function Index() {
       p_session_token: sessionToken,
       p_score: finalScore,
     });
+  }
+
+
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "20rem", "--sidebar-width-icon": "5rem" } as React.CSSProperties}>
