@@ -16,25 +16,26 @@ export function SiteHeader({
   const { isDark, toggle } = useTheme();
 
   return (
-    <header className="no-print no-profile-print border-b border-border bg-card/70 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-4 px-5 py-5">
-        {withSidebarTrigger ? <SidebarTrigger className="min-h-11 min-w-11" /> : null}
-        <Link to="/" className="flex items-center gap-3 rounded-lg">
-
-          <span className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <Brain className="size-6" aria-hidden="true" />
-          </span>
-          <span>
-            <span className="block font-display text-xl font-bold tracking-tight text-foreground">
-              Hyper-Mapper
+    <header className="no-print no-profile-print w-full border-b border-border bg-background/95 backdrop-blur">
+      <div className="flex w-full items-center justify-between gap-4 px-6 py-4">
+        <div className="flex min-w-0 items-center gap-3">
+          {withSidebarTrigger ? <SidebarTrigger className="min-h-11 min-w-11 shrink-0" /> : null}
+          <Link to="/" className="flex min-w-0 items-center gap-3 rounded-lg">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <Brain className="size-6" aria-hidden="true" />
             </span>
-            <span className="block text-sm text-muted-foreground">
-              Translate abstract concepts into your cognitive framework
+            <span className="min-w-0">
+              <span className="block truncate font-display text-xl font-bold tracking-tight text-foreground lg:text-2xl">
+                Hyper-Mapper
+              </span>
+              <span className="hidden truncate text-sm text-muted-foreground lg:block">
+                Translate abstract concepts into your cognitive framework
+              </span>
             </span>
-          </span>
-        </Link>
+          </Link>
+        </div>
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-3">
           <Link
             to="/"
             className="hidden items-center gap-2 rounded-full bg-primary-soft px-4 py-2 text-xs font-semibold text-accent-foreground transition-colors hover:bg-primary/20 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring sm:inline-flex"
