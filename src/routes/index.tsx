@@ -555,8 +555,11 @@ function Index() {
     const conceptText =
       raw_concept +
       ` [Output format: ${selectedFormat}. ${formatInstructions[selectedFormat] ?? ""}]` +
-      (sensoryPrefs.length ? ` [Formatting constraints: ${sensoryPrefs.join(", ")}]` : "");
+      (sensoryPrefs.length ? ` [Formatting constraints: ${sensoryPrefs.join(", ")}]` : "") +
+      buildSensoryInstructions(sensoryPrefs);
     setResultFormat(selectedFormat);
+    setResultPrefs(sensoryPrefs);
+
 
 
     const { data, error: fnError } = await supabase.functions.invoke("map-concept", {
