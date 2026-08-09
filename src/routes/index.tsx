@@ -594,13 +594,13 @@ function Index() {
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
         {activeTab === "Dashboard" ? (
-          <div key="dashboard" className="animate-fade-in w-full space-y-10">
-        <section className="no-print overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-8 shadow-sm">
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1.5 text-xs font-semibold text-accent-foreground">
+          <div key="dashboard" className="animate-fade-in mx-auto flex w-full max-w-5xl flex-col gap-8 px-4">
+        <section className="no-print w-full overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-8 shadow-sm">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-4 py-2 text-xl font-semibold text-accent-foreground lg:text-2xl">
             <Activity className="size-3.5" aria-hidden="true" />
             Cognitive Sync: Active
           </span>
-          <h2 className="mt-4 font-display text-5xl font-extrabold tracking-tight text-foreground lg:text-6xl">
+          <h2 className="mt-4 font-display text-6xl font-extrabold tracking-tight text-foreground">
             Hyper-Mapper Core
           </h2>
           <p className="mt-4 text-2xl leading-relaxed text-muted-foreground lg:text-3xl">
@@ -608,12 +608,12 @@ function Index() {
           </p>
         </section>
 
-        <div className="no-print space-y-3">
-          <div className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-secondary/40 px-8 py-6 text-center text-sm font-medium text-secondary-foreground sm:flex-row">
+        <div className="no-print w-full space-y-3">
+          <div className="flex flex-col items-center justify-center gap-2 rounded-2xl bg-secondary/40 px-8 py-6 text-center text-xl font-medium text-secondary-foreground lg:text-2xl sm:flex-row">
             <Brain className="size-4 shrink-0" aria-hidden="true" />
             <span>Designed for how your brain works — zero medical labels, zero diagnostic profiling required.</span>
           </div>
-          <p className="max-w-2xl text-center text-xs leading-relaxed text-muted-foreground">
+          <p className="w-full text-center text-xl leading-relaxed text-muted-foreground lg:text-2xl">
             <span className="font-semibold text-accent-foreground">Layout Spec:</span> Enforces 32px
             Cognitive Padding to prevent visual crowding and sensory overload.
           </p>
@@ -623,7 +623,7 @@ function Index() {
           aria-labelledby="step-one"
           className="no-print w-full rounded-2xl border border-border bg-card p-8 shadow-sm"
         >
-          <h2 id="step-one" className="font-display text-5xl font-extrabold text-foreground lg:text-6xl">
+          <h2 id="step-one" className="font-display text-3xl font-bold text-foreground lg:text-4xl">
             Build your concept map
           </h2>
           <p className="mt-3 text-2xl leading-relaxed text-muted-foreground lg:text-3xl">
@@ -645,7 +645,7 @@ function Index() {
                       type="button"
                       aria-pressed={selected}
                       onClick={() => setInputMode(mode.value)}
-                      className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors ${
+                      className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-5 py-3 text-xl font-semibold transition-colors lg:text-2xl ${
                         selected
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border bg-card text-foreground hover:border-primary hover:bg-secondary"
@@ -662,11 +662,11 @@ function Index() {
                 <Label htmlFor="file-upload" className="text-3xl font-bold lg:text-4xl">
                   Upload a document
                 </Label>
-                <p className="text-lg leading-relaxed text-muted-foreground">
+                <p className="text-xl leading-relaxed text-muted-foreground lg:text-2xl">
                   PDF, TXT, MD, or DOCX. The text is read right here in your browser — nothing is
                   uploaded anywhere.
                 </p>
-                <div className="flex items-center gap-3">
+                <div className="flex w-full items-center gap-3">
                   <Upload className="size-6 shrink-0 text-primary" aria-hidden="true" />
                   <input
                     id="file-upload"
@@ -676,13 +676,13 @@ function Index() {
                       void handleFileUpload(event.target.files?.[0]);
                       event.target.value = "";
                     }}
-                    className="block w-full cursor-pointer rounded-xl border-2 border-border bg-card p-6 text-3xl font-semibold text-foreground lg:text-4xl file:mr-4 file:min-h-14 file:cursor-pointer file:rounded-full file:border-0 file:bg-primary file:px-6 file:py-3 file:text-xl file:font-bold file:text-primary-foreground"
+                    className="block w-full cursor-pointer rounded-xl border-2 border-border bg-card p-6 text-3xl font-semibold leading-relaxed text-foreground file:mr-6 file:min-h-16 file:cursor-pointer file:rounded-full file:border-0 file:bg-primary file:px-8 file:py-4 file:text-3xl file:font-extrabold file:text-primary-foreground"
                   />
                 </div>
                 {uploadedFileName && !uploadError ? (
                   <p
                     aria-live="polite"
-                    className="inline-flex items-center gap-2 rounded-full bg-success-soft px-4 py-2 text-lg font-bold text-success"
+                    className="inline-flex items-center gap-2 rounded-full bg-success-soft px-4 py-2 text-xl font-bold text-success lg:text-2xl"
                   >
                     <FileCheck2 className="size-5 shrink-0" aria-hidden="true" />
                     File loaded: {uploadedFileName} — Ready to map
@@ -691,7 +691,7 @@ function Index() {
                 {uploadError ? (
                   <p
                     aria-live="polite"
-                    className="rounded-xl bg-highlight-soft px-4 py-3 text-lg font-semibold leading-relaxed text-foreground"
+                    className="rounded-xl bg-highlight-soft px-4 py-3 text-xl font-semibold leading-relaxed text-foreground lg:text-2xl"
                   >
                     {uploadError}
                   </p>
@@ -709,19 +709,19 @@ function Index() {
                     value={denseText}
                     onChange={(event) => setDenseText(event.target.value)}
                     placeholder="Paste the reading, assignment brief, or syllabus section here..."
-                    className="p-6 text-3xl leading-relaxed lg:text-4xl"
+                    className="w-full p-6 text-3xl leading-relaxed"
                   />
                   <Button
                     type="button"
                     variant="outline"
                     onClick={autoExtract}
-                    className="min-h-14 px-8 py-6 text-xl font-bold"
+                    className="min-h-16 px-8 py-6 text-3xl font-extrabold"
                   >
                     <Sparkles className="size-5" aria-hidden="true" />
                     Auto-Extract Concept &amp; Anchor
                   </Button>
                   {extractNote ? (
-                    <p aria-live="polite" className="text-lg leading-relaxed text-muted-foreground">
+                    <p aria-live="polite" className="text-xl leading-relaxed text-muted-foreground lg:text-2xl">
                       {extractNote}
                     </p>
                   ) : null}
@@ -742,7 +742,7 @@ function Index() {
                       type="button"
                       aria-pressed={selected}
                       onClick={() => setSelectedFormat(option.value)}
-                      className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors ${
+                      className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-5 py-3 text-xl font-semibold transition-colors lg:text-2xl ${
                         selected
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border bg-card text-foreground hover:border-primary hover:bg-secondary"
@@ -767,7 +767,7 @@ function Index() {
                 value={rawConcept}
                 onChange={(event) => setRawConcept(event.target.value)}
                 placeholder="e.g., Photosynthesis, Electromagnetism, Cell Division..."
-                className="p-6 text-3xl leading-relaxed lg:text-4xl"
+                className="w-full p-6 text-3xl leading-relaxed"
               />
             </div>
 
@@ -781,7 +781,7 @@ function Index() {
                 value={anchor}
                 onChange={(event) => setAnchor(event.target.value)}
                 placeholder="e.g., Computer Logic Gates, City Transit Maps, Minecraft Redstone, Music Theory..."
-                className="min-h-24 p-6 text-3xl md:text-3xl lg:text-4xl"
+                className="min-h-24 w-full p-6 text-3xl md:text-3xl"
               />
               <div
                 role="list"
@@ -797,7 +797,7 @@ function Index() {
                       role="listitem"
                       onClick={() => applyAnchorSuggestion(suggestion.value)}
                       aria-label={`Use anchor: ${suggestion.value}`}
-                      className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-border bg-card px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-border bg-card px-5 py-3 text-xl font-semibold text-foreground lg:text-2xl transition-colors hover:border-primary hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     >
                       <Icon className="size-4 shrink-0" aria-hidden="true" />
                       <span>{suggestion.label}</span>
@@ -809,7 +809,7 @@ function Index() {
 
             <Accordion type="single" collapsible className="rounded-xl border border-border">
               <AccordionItem value="sensory" className="border-b-0">
-                <AccordionTrigger className="min-h-14 px-4 text-left text-xl font-bold lg:text-2xl">
+                <AccordionTrigger className="min-h-14 px-4 text-left text-2xl font-bold lg:text-3xl">
                   Sensory &amp; Formatting Options (Optional)
                 </AccordionTrigger>
                 <AccordionContent className="px-4">
@@ -823,7 +823,7 @@ function Index() {
                           type="button"
                           aria-pressed={selected}
                           onClick={() => toggleSensoryPref(option.value)}
-                          className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-3 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                          className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-5 py-3 text-xl font-semibold transition-colors lg:text-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                             selected
                               ? "border-primary bg-primary text-primary-foreground"
                               : "border-border bg-card text-foreground hover:border-primary hover:bg-secondary"
@@ -843,7 +843,7 @@ function Index() {
               type="button"
               onClick={generate}
               disabled={loading}
-              className="min-h-20 w-full px-10 py-6 text-3xl font-extrabold"
+              className="min-h-20 w-full px-8 py-6 text-3xl font-extrabold"
             >
               {loading ? (
                 <>
@@ -871,7 +871,7 @@ function Index() {
         {result ? (
           <>
             <section aria-labelledby="summary" className="mt-10">
-              <h2 id="summary" className="font-display text-5xl font-extrabold text-foreground lg:text-6xl">
+              <h2 id="summary" className="font-display text-3xl font-bold text-foreground lg:text-4xl">
                 Your concept map
               </h2>
               <div className="print-card mt-4 rounded-2xl border-2 border-highlight/50 bg-highlight-soft p-6 shadow-sm">
@@ -886,7 +886,7 @@ function Index() {
 
             <section aria-labelledby="mappings" className="mt-10">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h2 id="mappings" className="font-display text-5xl font-extrabold text-foreground lg:text-6xl">
+                <h2 id="mappings" className="font-display text-3xl font-bold text-foreground lg:text-4xl">
                   {resultFormat === "Story Mode"
                     ? "Your story"
                     : resultFormat === "Bullet Points"
@@ -1039,7 +1039,7 @@ function Index() {
 
             {questions.length > 0 ? (
               <section aria-labelledby="quiz" className="mt-10">
-                <h2 id="quiz" className="font-display text-5xl font-extrabold text-foreground lg:text-6xl">
+                <h2 id="quiz" className="font-display text-3xl font-bold text-foreground lg:text-4xl">
                   Quick comprehension check
                 </h2>
                 <ol className="mt-4 space-y-6">
