@@ -32,6 +32,9 @@ import {
   FileText,
   Upload,
   FileCheck2,
+  Trash2,
+  X,
+
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { AppSidebar, type WorkspaceTab } from "@/components/app-sidebar";
@@ -339,8 +342,24 @@ function Index() {
     }
   }
 
+  function clearUploadedFile() {
+    setUploadedFileName(null);
+    setUploadError(null);
+    setDenseText("");
+    setExtractNote(null);
+  }
+
+  function deleteSavedMap(id: string) {
+    setDeck((current) => current.filter((item) => item?._id !== id));
+  }
+
+  function clearAllSavedMaps() {
+    setDeck([]);
+  }
+
   const deckStats = (() => {
     const total = deck.length;
+
     const anchors = deck
       .map((item) => String(item?._cognitive_anchor ?? "").trim())
       .filter(Boolean);
@@ -680,22 +699,46 @@ function Index() {
                   />
                 </div>
                 {uploadedFileName && !uploadError ? (
-                  <p
-                    aria-live="polite"
-                    className="inline-flex items-center gap-2 rounded-full bg-success-soft px-4 py-2 text-xl font-bold text-success lg:text-2xl"
-                  >
-                    <FileCheck2 className="size-5 shrink-0" aria-hidden="true" />
-                    File loaded: {uploadedFileName} — Ready to map
-                  </p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <p
+                      aria-live="polite"
+                      className="inline-flex items-center gap-2 rounded-full bg-success-soft px-4 py-2 text-xl font-bold text-success lg:text-2xl"
+                    >
+                      <FileCheck2 className="size-5 shrink-0" aria-hidden="true" />
+                      File loaded: {uploadedFileName} — Ready to map
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={clearUploadedFile}
+                      aria-label={`Remove file ${uploadedFileName}`}
+                      className="min-h-14 gap-2 px-6 text-xl font-bold lg:text-2xl"
+                    >
+                      <X className="size-5" aria-hidden="true" />
+                      Remove file
+                    </Button>
+                  </div>
                 ) : null}
                 {uploadError ? (
-                  <p
-                    aria-live="polite"
-                    className="rounded-xl bg-highlight-soft px-4 py-3 text-xl font-semibold leading-relaxed text-foreground lg:text-2xl"
-                  >
-                    {uploadError}
-                  </p>
+                  <div className="space-y-3">
+                    <p
+                      aria-live="polite"
+                      className="rounded-xl bg-highlight-soft px-4 py-3 text-xl font-semibold leading-relaxed text-foreground lg:text-2xl"
+                    >
+                      {uploadError}
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={clearUploadedFile}
+                      className="min-h-14 gap-2 px-6 text-xl font-bold lg:text-2xl"
+                    >
+                      <X className="size-5" aria-hidden="true" />
+                      Clear file
+                    </Button>
+                  </div>
                 ) : null}
+
               </div>
 
               {inputMode === "paste" ? (
@@ -711,15 +754,32 @@ function Index() {
                     placeholder="Paste the reading, assignment brief, or syllabus section here..."
                     className="w-full p-6 text-3xl leading-relaxed"
                   />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={autoExtract}
-                    className="min-h-16 px-8 py-6 text-3xl font-extrabold"
-                  >
-                    <Sparkles className="size-5" aria-hidden="true" />
-                    Auto-Extract Concept &amp; Anchor
-                  </Button>
+                  <div className="flex flex-wrap gap-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={autoExtract}
+                      className="min-h-16 px-8 py-6 text-3xl font-extrabold"
+                    >
+                      <Sparkles className="size-5" aria-hidden="true" />
+                      Auto-Extract Concept &amp; Anchor
+                    </Button>
+                    {denseText ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => {
+                          setDenseText("");
+                          setExtractNote(null);
+                        }}
+                        className="min-h-16 px-8 py-6 text-3xl font-extrabold"
+                      >
+                        <X className="size-5" aria-hidden="true" />
+                        Clear text
+                      </Button>
+                    ) : null}
+                  </div>
+
                   {extractNote ? (
                     <p aria-live="polite" className="text-xl leading-relaxed text-muted-foreground lg:text-2xl">
                       {extractNote}
@@ -1239,14 +1299,33 @@ function Index() {
 
         {activeTab === "History" ? (
           <div key="history" className="no-profile-print animate-fade-in space-y-8">
-            <header>
-              <h2 className="font-display text-5xl font-extrabold tracking-tight text-foreground lg:text-6xl">
-                History
-              </h2>
-              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
-                <Layers className="mr-2 inline size-4" aria-hidden="true" />
-                Your last 15 maps, saved on this device only.
-              </p>
+            <header className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="font-display text-5xl font-extrabold tracking-tight text-foreground lg:text-6xl">
+                  History
+                </h2>
+                <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                  <Layers className="mr-2 inline size-4" aria-hidden="true" />
+                  Your last 15 maps, saved on this device only.
+                </p>
+              </div>
+              {deck.length > 0 ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    if (
+                      window.confirm("Delete all saved maps on this device? This cannot be undone.")
+                    ) {
+                      clearAllSavedMaps();
+                    }
+                  }}
+                  className="min-h-14 gap-2 border-2 px-6 text-xl font-bold text-destructive hover:bg-destructive hover:text-destructive-foreground lg:text-2xl"
+                >
+                  <Trash2 className="size-5" aria-hidden="true" />
+                  Clear all ({deck.length})
+                </Button>
+              ) : null}
             </header>
 
             {deck.length === 0 ? (
@@ -1261,12 +1340,23 @@ function Index() {
                     value={saved._id}
                     className="rounded-2xl border border-border bg-card px-6 shadow-sm"
                   >
-                    <AccordionTrigger
-                      aria-label={`Saved map: ${saved._raw_concept || "concept map"}`}
-                      className="min-h-13 text-left text-lg font-bold"
-                    >
-                      {saved._raw_concept || "Saved concept map"}
-                    </AccordionTrigger>
+                    <div className="flex items-center gap-3">
+                      <AccordionTrigger
+                        aria-label={`Saved map: ${saved._raw_concept || "concept map"}`}
+                        className="min-h-13 flex-1 text-left text-lg font-bold"
+                      >
+                        {saved._raw_concept || "Saved concept map"}
+                      </AccordionTrigger>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => deleteSavedMap(saved._id)}
+                        aria-label={`Delete saved map: ${saved._raw_concept || "concept map"}`}
+                        className="min-h-11 min-w-11 shrink-0 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                      >
+                        <Trash2 className="size-5" aria-hidden="true" />
+                      </Button>
+                    </div>
                     <AccordionContent className="pb-6">
                       {saved._cognitive_anchor ? (
                         <p className="text-sm font-semibold text-accent-foreground">
@@ -1285,11 +1375,21 @@ function Index() {
                           ))}
                         </div>
                       ) : null}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => deleteSavedMap(saved._id)}
+                        className="mt-6 min-h-12 gap-2 px-5 text-base font-bold text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                      >
+                        <Trash2 className="size-4" aria-hidden="true" />
+                        Delete this map
+                      </Button>
                     </AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>
             )}
+
           </div>
         ) : null}
 
