@@ -208,6 +208,29 @@ const sensoryOptions = [
   { value: "Break into Micro-Steps", label: "🧩 Break into Micro-Steps", icon: Puzzle },
 ];
 
+const sensoryRules: Record<string, string> = {
+  "Short Sentences": "Enforce rigid maximum sentence length of 10 words.",
+  "Plain Language (No Jargon)":
+    "Strip all academic or technical jargon; explain concepts using everyday grade-school vocabulary.",
+  "High Visual Contrast":
+    "Keep each explanation visually scannable: short standalone lines, no dense paragraphs.",
+  "Break into Micro-Steps":
+    "Deconstruct the explanation into granular, sequential micro-steps (at least 5 distinct atomic steps), each written as its own sentence.",
+};
+
+// Combine every selected chip into one rule block so the model obeys all of
+// them simultaneously (any combination of the four options).
+function buildSensoryInstructions(prefs: string[]) {
+  const rules = prefs.map((pref) => sensoryRules[pref]).filter(Boolean);
+  if (rules.length === 0) return "";
+  return (
+    ` [Accessibility formatting rules — obey ALL of the following simultaneously: ` +
+    rules.map((rule, index) => `${index + 1}) ${rule}`).join(" ") +
+    `]`
+  );
+}
+
+
 const formatOptions = [
   { value: "Concept Map", icon: Network },
   { value: "Story Mode", icon: BookOpen },
