@@ -387,31 +387,14 @@ function Index() {
     setDeck([]);
   }
 
-  const deckStats = (() => {
-    const total = deck.length;
+  function formatSavedAt(value: unknown) {
+    const raw = typeof value === "string" ? value : "";
+    if (!raw) return "—";
+    const date = new Date(raw);
+    if (Number.isNaN(date.getTime())) return "—";
+    return date.toLocaleString();
+  }
 
-    const anchors = deck
-      .map((item) => String(item?._cognitive_anchor ?? "").trim())
-      .filter(Boolean);
-    const counts = new Map<string, number>();
-    for (const anchorValue of anchors) {
-      const category = categorizeAnchor(anchorValue);
-      counts.set(category, (counts.get(category) ?? 0) + 1);
-    }
-    let topCategory = "Not enough data yet";
-    let best = 0;
-    for (const [category, count] of counts) {
-      if (count > best) {
-        best = count;
-        topCategory = category;
-      }
-    }
-    return {
-      total,
-      topCategory,
-      distinctAnchors: new Set(anchors.map((a) => a.toLowerCase())).size,
-    };
-  })();
 
   function autoExtract() {
     const text = denseText.trim();
@@ -1274,50 +1257,50 @@ function Index() {
             </div>
 
             <section
-              aria-labelledby="pattern-intelligence"
+              aria-labelledby="recent-activity"
               className="rounded-3xl border border-border bg-card p-8 shadow-sm"
             >
               <p className="inline-flex items-center gap-2 rounded-full bg-secondary/60 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-secondary-foreground">
                 <Activity className="size-3.5" aria-hidden="true" />
-                Local pattern intelligence
+                Local activity log
               </p>
               <h3
-                id="pattern-intelligence"
+                id="recent-activity"
                 className="mt-4 font-display text-2xl font-bold text-foreground"
               >
-                Autonomous Behavioral Adaptation
+                Recent activity (this device only)
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Derived locally from your usage patterns. Nothing leaves this device.
+                A plain record of what you mapped. No scores, no ratings, nothing leaves this
+                device.
               </p>
 
-              <div className="mt-6 grid gap-5 sm:grid-cols-3">
-                <div className="rounded-2xl border border-border bg-gradient-to-br from-primary-soft to-card p-6">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
-                    Maps generated
-                  </p>
-                  <p className="mt-2 font-display text-4xl font-bold text-foreground">
-                    {deckStats.total}
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-border bg-gradient-to-br from-highlight-soft to-card p-6">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
-                    Top anchor category
-                  </p>
-                  <p className="mt-2 font-display text-2xl font-bold leading-snug text-foreground">
-                    {deckStats.topCategory}
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-border bg-gradient-to-br from-secondary to-card p-6">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
-                    Distinct anchors used
-                  </p>
-                  <p className="mt-2 font-display text-4xl font-bold text-foreground">
-                    {deckStats.distinctAnchors}
-                  </p>
-                </div>
-              </div>
+              {deck.length === 0 ? (
+                <p className="mt-6 rounded-2xl border border-dashed border-border p-6 text-base text-muted-foreground">
+                  No activity yet. Generate a map and it will show up here.
+                </p>
+              ) : (
+                <ul className="mt-6 space-y-3">
+                  {deck.map((saved) => (
+                    <li
+                      key={saved.id ?? saved._saved_at}
+                      className="rounded-2xl border border-border bg-background/60 p-5"
+                    >
+                      <p className="font-display text-lg font-bold leading-snug text-foreground">
+                        {saved._raw_concept || "Saved concept map"}
+                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Anchor: {saved._cognitive_anchor || "—"}
+                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {formatSavedAt(saved._saved_at)}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
+
 
             <Button
               type="button"
@@ -1438,33 +1421,19 @@ function Index() {
               </h2>
             </header>
 
-            <div className="grid gap-6 sm:grid-cols-2">
-              <article className="rounded-3xl border border-border bg-gradient-to-br from-primary-soft to-card p-8 shadow-sm">
-                <p className="font-display text-6xl font-bold tracking-tight text-foreground">
-                  92.1%
-                </p>
-                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                  of students experiencing severe school distress are neurodivergent.
-                </p>
-              </article>
-              <article className="rounded-3xl border border-border bg-gradient-to-br from-highlight-soft to-card p-8 shadow-sm">
-                <p className="font-display text-6xl font-bold tracking-tight text-foreground">
-                  83.4%
-                </p>
-                <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                  of those students are autistic.
-                </p>
-              </article>
-            </div>
+            <article className="rounded-3xl border border-border border-l-4 border-l-primary bg-card p-8 text-lg leading-relaxed text-foreground shadow-sm">
+              <p>
+                According to Connolly, Constable &amp; Mullally (2023, Frontiers in Psychiatry),
+                92.1% of students experiencing severe school distress are neurodivergent (83.4%
+                autistic). Standard educational environments demand high working memory, which
+                frequently triggers executive dysfunction. Hyper-Mapper is built to bridge this
+                accessibility gap.
+              </p>
+              <p className="mt-4 text-sm font-semibold text-muted-foreground">
+                — Connolly, Constable &amp; Mullally (2023), Frontiers in Psychiatry
+              </p>
+            </article>
 
-            <blockquote className="rounded-3xl border-l-4 border-l-primary border border-border bg-card p-8 text-lg leading-relaxed text-foreground shadow-sm">
-              Standard curricula assume a linear, executive-function-heavy path to understanding.
-              For many learners that path never opens. Hyper-Mapper bridges the gap by routing new
-              concepts through a system the learner already masters.
-              <footer className="mt-4 text-sm font-semibold text-muted-foreground">
-                — Connolly &amp; Mullally, 2023
-              </footer>
-            </blockquote>
           </div>
         ) : null}
 
