@@ -275,6 +275,7 @@ function Index() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ConceptMapPayload | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [bridgeAnswer, setBridgeAnswer] = useState<number | null>(null);
   const [sensoryPrefs, setSensoryPrefs] = useState<string[]>([]);
@@ -482,25 +483,23 @@ function Index() {
     }
 
     setFeedbackSaving(true);
-    const { data, error: insertError } = await supabase
-      .from("tester_feedback")
-      .insert({
-        session_id: sessionId,
-        tester_type: feedbackTesterId.trim(),
-        tester_id: feedbackTesterId.trim(),
-        tester_email: feedbackEmail.trim(),
-        clarity_rating: feedbackClarity,
-        cognitive_friction_reduction_rating: feedbackFriction,
-        qualitative_notes: feedbackNotes.trim() || null,
-      })
-      .select("id, created_at")
-      .maybeSingle();
+    const { error: insertError } = await supabase.rpc("submit_tester_feedback", {
+      p_session_id: sessionId,
+      p_tester_type: feedbackTesterId.trim(),
+      p_clarity_rating: feedbackClarity,
+      p_friction_rating: feedbackFriction,
+      p_notes: feedbackNotes.trim() || null,
+      p_tester_id: feedbackTesterId.trim(),
+      p_tester_email: feedbackEmail.trim(),
+    });
     setFeedbackSaving(false);
 
     if (insertError) {
       setFeedbackError(insertError.message);
       return;
     }
+
+    const data: { id?: string; created_at?: string } | null = null;
 
     setSessionFeedback((prev) => [
       {
