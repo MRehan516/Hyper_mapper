@@ -590,20 +590,20 @@ function Index() {
         <AppSidebar activeTab={activeTab} onSelectTab={setActiveTab} />
         <SidebarInset className="bg-background">
         <SiteHeader withSidebarTrigger onOpenFeedback={() => setFeedbackOpen(true)} />
-        <main className="mx-auto w-full max-w-7xl px-6 py-10 lg:px-12">
+        <main className="w-full px-6 py-10 lg:px-10">
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
         {activeTab === "Dashboard" ? (
-          <div key="dashboard" className="animate-fade-in mx-auto w-full max-w-7xl space-y-10">
+          <div key="dashboard" className="animate-fade-in w-full space-y-10">
         <section className="no-print overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-8 shadow-sm">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-3 py-1.5 text-xs font-semibold text-accent-foreground">
             <Activity className="size-3.5" aria-hidden="true" />
             Cognitive Sync: Active
           </span>
-          <h2 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
+          <h2 className="mt-4 font-display text-5xl font-extrabold tracking-tight text-foreground lg:text-6xl">
             Hyper-Mapper Core
           </h2>
-          <p className="mt-4 max-w-3xl text-xl leading-relaxed text-muted-foreground lg:text-2xl">
+          <p className="mt-4 text-2xl leading-relaxed text-muted-foreground lg:text-3xl">
             Translate any academic concept into the system your brain already knows by heart.
           </p>
         </section>
@@ -613,7 +613,7 @@ function Index() {
             <Brain className="size-4 shrink-0" aria-hidden="true" />
             <span>Designed for how your brain works — zero medical labels, zero diagnostic profiling required.</span>
           </div>
-          <p className="mx-auto max-w-2xl text-center text-xs leading-relaxed text-muted-foreground">
+          <p className="max-w-2xl text-center text-xs leading-relaxed text-muted-foreground">
             <span className="font-semibold text-accent-foreground">Layout Spec:</span> Enforces 32px
             Cognitive Padding to prevent visual crowding and sensory overload.
           </p>
@@ -623,10 +623,10 @@ function Index() {
           aria-labelledby="step-one"
           className="no-print w-full rounded-2xl border border-border bg-card p-8 shadow-sm"
         >
-          <h2 id="step-one" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
+          <h2 id="step-one" className="font-display text-5xl font-extrabold text-foreground lg:text-6xl">
             Build your concept map
           </h2>
-          <p className="mt-3 text-xl leading-relaxed text-muted-foreground lg:text-2xl">
+          <p className="mt-3 text-2xl leading-relaxed text-muted-foreground lg:text-3xl">
             Tell us what you are learning and the system you already understand deeply.
           </p>
 
@@ -659,7 +659,7 @@ function Index() {
               </div>
 
               <div className="space-y-4 rounded-2xl border-2 border-dashed border-border bg-secondary/20 p-6">
-                <Label htmlFor="file-upload" className="text-2xl font-bold lg:text-3xl">
+                <Label htmlFor="file-upload" className="text-3xl font-bold lg:text-4xl">
                   Upload a document
                 </Label>
                 <p className="text-lg leading-relaxed text-muted-foreground">
@@ -676,7 +676,7 @@ function Index() {
                       void handleFileUpload(event.target.files?.[0]);
                       event.target.value = "";
                     }}
-                    className="block w-full cursor-pointer rounded-xl border-2 border-border bg-card p-4 text-lg font-semibold text-foreground file:mr-4 file:min-h-11 file:cursor-pointer file:rounded-full file:border-0 file:bg-primary file:px-5 file:py-2 file:text-base file:font-bold file:text-primary-foreground"
+                    className="block w-full cursor-pointer rounded-xl border-2 border-border bg-card p-6 text-3xl font-semibold text-foreground lg:text-4xl file:mr-4 file:min-h-14 file:cursor-pointer file:rounded-full file:border-0 file:bg-primary file:px-6 file:py-3 file:text-xl file:font-bold file:text-primary-foreground"
                   />
                 </div>
                 {uploadedFileName && !uploadError ? (
@@ -700,7 +700,7 @@ function Index() {
 
               {inputMode === "paste" ? (
                 <div className="space-y-4 rounded-2xl border border-border bg-secondary/30 p-6">
-                  <Label htmlFor="dense-text" className="text-2xl font-bold lg:text-3xl">
+                  <Label htmlFor="dense-text" className="text-3xl font-bold lg:text-4xl">
                     Paste a paragraph or syllabus snippet
                   </Label>
                   <Textarea
@@ -709,7 +709,7 @@ function Index() {
                     value={denseText}
                     onChange={(event) => setDenseText(event.target.value)}
                     placeholder="Paste the reading, assignment brief, or syllabus section here..."
-                    className="p-6 text-2xl leading-relaxed lg:text-3xl"
+                    className="p-6 text-3xl leading-relaxed lg:text-4xl"
                   />
                   <Button
                     type="button"
@@ -731,7 +731,7 @@ function Index() {
 
 
             <div className="space-y-3">
-              <p className="text-2xl font-bold text-foreground lg:text-3xl">Output format</p>
+              <p className="text-3xl font-bold text-foreground lg:text-4xl">Output format</p>
               <div role="group" aria-label="Output format" className="flex flex-wrap gap-2">
                 {formatOptions.map((option) => {
                   const Icon = option.icon;
@@ -758,7 +758,7 @@ function Index() {
 
             <div className="space-y-3">
 
-              <Label htmlFor="concept" className="text-2xl font-bold lg:text-3xl">
+              <Label htmlFor="concept" className="text-3xl font-bold lg:text-4xl">
                 Academic Concept to Learn
               </Label>
               <Textarea
@@ -767,12 +767,12 @@ function Index() {
                 value={rawConcept}
                 onChange={(event) => setRawConcept(event.target.value)}
                 placeholder="e.g., Photosynthesis, Electromagnetism, Cell Division..."
-                className="p-6 text-2xl leading-relaxed lg:text-3xl"
+                className="p-6 text-3xl leading-relaxed lg:text-4xl"
               />
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="anchor" className="text-2xl font-bold lg:text-3xl">
+              <Label htmlFor="anchor" className="text-3xl font-bold lg:text-4xl">
                 Your Preferred Cognitive Anchor
               </Label>
               <Input
@@ -781,7 +781,7 @@ function Index() {
                 value={anchor}
                 onChange={(event) => setAnchor(event.target.value)}
                 placeholder="e.g., Computer Logic Gates, City Transit Maps, Minecraft Redstone, Music Theory..."
-                className="min-h-20 p-6 text-2xl md:text-2xl lg:text-3xl"
+                className="min-h-24 p-6 text-3xl md:text-3xl lg:text-4xl"
               />
               <div
                 role="list"
@@ -843,7 +843,7 @@ function Index() {
               type="button"
               onClick={generate}
               disabled={loading}
-              className="min-h-16 w-full px-8 py-6 text-2xl font-bold"
+              className="min-h-20 w-full px-10 py-6 text-3xl font-extrabold"
             >
               {loading ? (
                 <>
@@ -871,7 +871,7 @@ function Index() {
         {result ? (
           <>
             <section aria-labelledby="summary" className="mt-10">
-              <h2 id="summary" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
+              <h2 id="summary" className="font-display text-5xl font-extrabold text-foreground lg:text-6xl">
                 Your concept map
               </h2>
               <div className="print-card mt-4 rounded-2xl border-2 border-highlight/50 bg-highlight-soft p-6 shadow-sm">
@@ -886,7 +886,7 @@ function Index() {
 
             <section aria-labelledby="mappings" className="mt-10">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h2 id="mappings" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
+                <h2 id="mappings" className="font-display text-5xl font-extrabold text-foreground lg:text-6xl">
                   {resultFormat === "Story Mode"
                     ? "Your story"
                     : resultFormat === "Bullet Points"
@@ -1039,7 +1039,7 @@ function Index() {
 
             {questions.length > 0 ? (
               <section aria-labelledby="quiz" className="mt-10">
-                <h2 id="quiz" className="font-display text-4xl font-extrabold text-foreground lg:text-5xl">
+                <h2 id="quiz" className="font-display text-5xl font-extrabold text-foreground lg:text-6xl">
                   Quick comprehension check
                 </h2>
                 <ol className="mt-4 space-y-6">
@@ -1140,7 +1140,7 @@ function Index() {
         {activeTab === "My Learning DNA" ? (
           <div key="dna" className="no-profile-print animate-fade-in space-y-8">
             <header>
-              <h2 className="font-display text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
+              <h2 className="font-display text-5xl font-extrabold tracking-tight text-foreground lg:text-6xl">
                 My Learning DNA
               </h2>
               <p className="mt-2 text-base leading-relaxed text-muted-foreground">
@@ -1240,7 +1240,7 @@ function Index() {
         {activeTab === "History" ? (
           <div key="history" className="no-profile-print animate-fade-in space-y-8">
             <header>
-              <h2 className="font-display text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
+              <h2 className="font-display text-5xl font-extrabold tracking-tight text-foreground lg:text-6xl">
                 History
               </h2>
               <p className="mt-2 text-base leading-relaxed text-muted-foreground">
@@ -1300,7 +1300,7 @@ function Index() {
                 <FileText className="size-3.5" aria-hidden="true" />
                 Research &amp; Impact
               </p>
-              <h2 className="mt-4 max-w-4xl font-display text-4xl font-extrabold leading-tight tracking-tight text-foreground lg:text-5xl">
+              <h2 className="mt-4 font-display text-5xl font-extrabold leading-tight tracking-tight text-foreground lg:text-6xl">
                 The crisis behind school distress
               </h2>
             </header>
