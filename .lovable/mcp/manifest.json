@@ -62,43 +62,6 @@
         }
       },
       {
-        "name": "list_mapping_sessions",
-        "title": "List recent mapping sessions",
-        "description": "List the most recent Hyper-Mapper concept mapping sessions, including the concept, the cognitive anchor used, and the comprehension score when a quiz was completed.",
-        "annotations": {
-          "readOnlyHint": true,
-          "idempotentHint": true
-        },
-        "inputSchema": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
-          "type": "object",
-          "properties": {
-            "limit": {
-              "type": "integer",
-              "minimum": -9007199254740991,
-              "maximum": 9007199254740991,
-              "description": "How many sessions to return (1-50, default 10)."
-            }
-          },
-          "required": [
-            "limit"
-          ]
-        },
-        "outputSchema": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
-          "type": "object",
-          "properties": {
-            "sessions": {
-              "type": "array",
-              "items": {}
-            }
-          },
-          "required": [
-            "sessions"
-          ]
-        }
-      },
-      {
         "name": "submit_tester_feedback",
         "title": "Submit tester feedback",
         "description": "Record NNEA tester feedback about Hyper-Mapper: who the tester is, how clear the analogies were, how much cognitive friction was reduced, and free-form notes.",
