@@ -208,6 +208,29 @@ const sensoryOptions = [
   { value: "Break into Micro-Steps", label: "🧩 Break into Micro-Steps", icon: Puzzle },
 ];
 
+const sensoryRules: Record<string, string> = {
+  "Short Sentences": "Enforce rigid maximum sentence length of 10 words.",
+  "Plain Language (No Jargon)":
+    "Strip all academic or technical jargon; explain concepts using everyday grade-school vocabulary.",
+  "High Visual Contrast":
+    "Keep each explanation visually scannable: short standalone lines, no dense paragraphs.",
+  "Break into Micro-Steps":
+    "Deconstruct the explanation into granular, sequential micro-steps (at least 5 distinct atomic steps), each written as its own sentence.",
+};
+
+// Combine every selected chip into one rule block so the model obeys all of
+// them simultaneously (any combination of the four options).
+function buildSensoryInstructions(prefs: string[]) {
+  const rules = prefs.map((pref) => sensoryRules[pref]).filter(Boolean);
+  if (rules.length === 0) return "";
+  return (
+    ` [Accessibility formatting rules — obey ALL of the following simultaneously: ` +
+    rules.map((rule, index) => `${index + 1}) ${rule}`).join(" ") +
+    `]`
+  );
+}
+
+
 const formatOptions = [
   { value: "Concept Map", icon: Network },
   { value: "Story Mode", icon: BookOpen },
@@ -288,6 +311,13 @@ function Index() {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("Dashboard");
   const [selectedFormat, setSelectedFormat] = useState("Concept Map");
   const [resultFormat, setResultFormat] = useState("Concept Map");
+  const [resultPrefs, setResultPrefs] = useState<string[]>([]);
+  const renderHighContrast = resultPrefs.includes("High Visual Contrast");
+  const renderMicroSteps = resultPrefs.includes("Break into Micro-Steps");
+  const renderRelaxedType =
+    resultPrefs.includes("Short Sentences") || resultPrefs.includes("Plain Language (No Jargon)");
+
+
   const [inputMode, setInputMode] = useState<"manual" | "paste">("manual");
   const [denseText, setDenseText] = useState("");
   const [extractNote, setExtractNote] = useState<string | null>(null);
@@ -530,8 +560,11 @@ function Index() {
     const conceptText =
       raw_concept +
       ` [Output format: ${selectedFormat}. ${formatInstructions[selectedFormat] ?? ""}]` +
-      (sensoryPrefs.length ? ` [Formatting constraints: ${sensoryPrefs.join(", ")}]` : "");
+      (sensoryPrefs.length ? ` [Formatting constraints: ${sensoryPrefs.join(", ")}]` : "") +
+      buildSensoryInstructions(sensoryPrefs);
     setResultFormat(selectedFormat);
+    setResultPrefs(sensoryPrefs);
+
 
 
     const { data, error: fnError } = await supabase.functions.invoke("map-concept", {
@@ -980,7 +1013,14 @@ function Index() {
 
               {isFocusMode && result.mappings[activeCardIndex] ? (
                 <div className="mt-4">
-                  <MappingCard mapping={result.mappings[activeCardIndex]!} index={activeCardIndex} />
+                  <MappingCard
+                    mapping={result.mappings[activeCardIndex]!}
+                    index={activeCardIndex}
+                    highContrast={renderHighContrast}
+                    microSteps={renderMicroSteps}
+                    relaxedTypography={renderRelaxedType}
+                  />
+
                   <div className="no-print mt-5 flex items-center justify-between gap-3">
                     <Button
                       type="button"
@@ -1075,25 +1115,18 @@ function Index() {
               ) : (
                 <ul className="mt-4 grid gap-5 md:grid-cols-2">
                   {result.mappings?.map((mapping, index) => (
-                    <li
-                      key={`${mapping.concept_element}-${index}`}
-                      className="print-card rounded-2xl border border-border bg-card p-6 shadow-sm"
-                    >
-                      <span className="inline-flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                        {index + 1}
-                      </span>
-                      <h3 className="mt-4 text-lg font-bold text-foreground">
-                        {mapping.concept_element}
-                      </h3>
-                      <p className="mt-1 text-sm font-semibold text-accent-foreground">
-                        ↳ {mapping.anchor_equivalent}
-                      </p>
-                      <p className="mt-3 text-base leading-relaxed text-muted-foreground">
-                        {mapping.explanation}
-                      </p>
+                    <li key={`${mapping.concept_element}-${index}`}>
+                      <MappingCard
+                        mapping={mapping}
+                        index={index}
+                        highContrast={renderHighContrast}
+                        microSteps={renderMicroSteps}
+                        relaxedTypography={renderRelaxedType}
+                      />
                     </li>
                   ))}
                 </ul>
+
               )}
             </section>
 
