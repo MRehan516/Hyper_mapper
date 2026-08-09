@@ -54,8 +54,18 @@ export function AppSidebar({
                       isActive={activeTab === item.label}
                       onClick={() => onSelectTab(item.label)}
                       aria-current={activeTab === item.label ? "page" : undefined}
-                      className="min-h-14 gap-4 py-3 text-xl font-semibold lg:text-2xl"
+                      className={`min-h-14 gap-4 rounded-xl border-2 py-3 text-xl font-semibold transition-colors lg:text-2xl focus-visible:ring-4 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                        activeTab === item.label
+                          ? "border-primary bg-primary text-primary-foreground shadow-sm hover:bg-primary hover:text-primary-foreground data-[active=true]:bg-primary data-[active=true]:text-primary-foreground"
+                          : "border-transparent hover:border-primary hover:bg-secondary hover:text-foreground active:bg-secondary"
+                      }`}
                     >
+                      {activeTab === item.label ? (
+                        <span
+                          aria-hidden="true"
+                          className="absolute left-0 top-1/2 h-8 w-1.5 -translate-y-1/2 rounded-r-full bg-primary-foreground"
+                        />
+                      ) : null}
                       <Icon className="size-6 shrink-0 lg:size-7" aria-hidden="true" />
                       <span>{item.label}</span>
                     </SidebarMenuButton>
