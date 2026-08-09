@@ -1299,14 +1299,33 @@ function Index() {
 
         {activeTab === "History" ? (
           <div key="history" className="no-profile-print animate-fade-in space-y-8">
-            <header>
-              <h2 className="font-display text-5xl font-extrabold tracking-tight text-foreground lg:text-6xl">
-                History
-              </h2>
-              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
-                <Layers className="mr-2 inline size-4" aria-hidden="true" />
-                Your last 15 maps, saved on this device only.
-              </p>
+            <header className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="font-display text-5xl font-extrabold tracking-tight text-foreground lg:text-6xl">
+                  History
+                </h2>
+                <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                  <Layers className="mr-2 inline size-4" aria-hidden="true" />
+                  Your last 15 maps, saved on this device only.
+                </p>
+              </div>
+              {deck.length > 0 ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    if (
+                      window.confirm("Delete all saved maps on this device? This cannot be undone.")
+                    ) {
+                      clearAllSavedMaps();
+                    }
+                  }}
+                  className="min-h-14 gap-2 border-2 px-6 text-xl font-bold text-destructive hover:bg-destructive hover:text-destructive-foreground lg:text-2xl"
+                >
+                  <Trash2 className="size-5" aria-hidden="true" />
+                  Clear all ({deck.length})
+                </Button>
+              ) : null}
             </header>
 
             {deck.length === 0 ? (
@@ -1321,12 +1340,23 @@ function Index() {
                     value={saved._id}
                     className="rounded-2xl border border-border bg-card px-6 shadow-sm"
                   >
-                    <AccordionTrigger
-                      aria-label={`Saved map: ${saved._raw_concept || "concept map"}`}
-                      className="min-h-13 text-left text-lg font-bold"
-                    >
-                      {saved._raw_concept || "Saved concept map"}
-                    </AccordionTrigger>
+                    <div className="flex items-center gap-3">
+                      <AccordionTrigger
+                        aria-label={`Saved map: ${saved._raw_concept || "concept map"}`}
+                        className="min-h-13 flex-1 text-left text-lg font-bold"
+                      >
+                        {saved._raw_concept || "Saved concept map"}
+                      </AccordionTrigger>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => deleteSavedMap(saved._id)}
+                        aria-label={`Delete saved map: ${saved._raw_concept || "concept map"}`}
+                        className="min-h-11 min-w-11 shrink-0 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                      >
+                        <Trash2 className="size-5" aria-hidden="true" />
+                      </Button>
+                    </div>
                     <AccordionContent className="pb-6">
                       {saved._cognitive_anchor ? (
                         <p className="text-sm font-semibold text-accent-foreground">
@@ -1345,11 +1375,21 @@ function Index() {
                           ))}
                         </div>
                       ) : null}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => deleteSavedMap(saved._id)}
+                        className="mt-6 min-h-12 gap-2 px-5 text-base font-bold text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                      >
+                        <Trash2 className="size-4" aria-hidden="true" />
+                        Delete this map
+                      </Button>
                     </AccordionContent>
                   </AccordionItem>
                 ))}
               </Accordion>
             )}
+
           </div>
         ) : null}
 
