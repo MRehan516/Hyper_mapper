@@ -312,6 +312,11 @@ function Index() {
   const [selectedFormat, setSelectedFormat] = useState("Concept Map");
   const [resultFormat, setResultFormat] = useState("Concept Map");
   const [resultPrefs, setResultPrefs] = useState<string[]>([]);
+  const renderHighContrast = resultPrefs.includes("High Visual Contrast");
+  const renderMicroSteps = resultPrefs.includes("Break into Micro-Steps");
+  const renderRelaxedType =
+    resultPrefs.includes("Short Sentences") || resultPrefs.includes("Plain Language (No Jargon)");
+
 
   const [inputMode, setInputMode] = useState<"manual" | "paste">("manual");
   const [denseText, setDenseText] = useState("");
