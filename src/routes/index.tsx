@@ -520,6 +520,7 @@ function Index() {
     setError(null);
     setResult(null);
     setSessionId(null);
+    setSessionToken(null);
     setAnswers({});
     setBridgeAnswer(null);
     setSessionFeedback([]);
@@ -582,17 +583,22 @@ function Index() {
     );
     setLoading(false);
 
-    const { data: inserted, error: insertError } = await supabase
-      .from("mapping_sessions")
-      .insert({ raw_concept, cognitive_anchor, structured_output: payload })
-      .select("id")
-      .maybeSingle();
+    const { data: inserted, error: insertError } = await supabase.rpc("create_mapping_session", {
+      p_raw_concept: raw_concept,
+      p_cognitive_anchor: cognitive_anchor,
+      p_structured_output: payload,
+    });
 
     if (insertError) {
       setError(`Your map was generated, but saving the session failed: ${insertError.message}`);
       return;
     }
-    if (inserted?.id) setSessionId(inserted.id as string);
+    const row = (Array.isArray(inserted) ? inserted[0] : inserted) as
+      | { id?: string; session_token?: string }
+      | null
+      | undefined;
+    if (row?.id) setSessionId(row.id);
+    if (row?.session_token) setSessionToken(row.session_token);
   }
 
   async function selectAnswer(questionIndex: number, option: string) {
@@ -600,7 +606,7 @@ function Index() {
     const next = { ...answers, [questionIndex]: option };
     setAnswers(next);
 
-    if (Object.keys(next).length !== questions.length || !sessionId) return;
+    if (Object.keys(next).length !== questions.length || !sessionId || !sessionToken) return;
 
     const finalScore = questions.reduce((total, question, index) => {
       const chosen = next[index];
@@ -608,11 +614,11 @@ function Index() {
       return total + (isCorrect(question, chosen, question.options.indexOf(chosen)) ? 1 : 0);
     }, 0);
 
-    await supabase
-      .from("mapping_sessions")
-      .update({ comprehension_score: finalScore })
-      .eq("id", sessionId);
-  }
+    await supabase.rpc("set_comprehension_score", {
+      p_session_id: sessionId,
+      p_session_token: sessionToken,
+      p_score: finalScore,
+    });
 
   return (
     <SidebarProvider style={{ "--sidebar-width": "20rem", "--sidebar-width-icon": "5rem" } as React.CSSProperties}>
