@@ -590,11 +590,11 @@ function Index() {
         <AppSidebar activeTab={activeTab} onSelectTab={setActiveTab} />
         <SidebarInset className="bg-background">
         <SiteHeader withSidebarTrigger onOpenFeedback={() => setFeedbackOpen(true)} />
-        <main className="w-full px-6 py-10 lg:px-10">
+        <main className="flex w-full flex-col gap-8 px-6 py-8 lg:px-12">
         <h1 className="sr-only">Hyper-Mapper concept mapping dashboard</h1>
 
         {activeTab === "Dashboard" ? (
-          <div key="dashboard" className="animate-fade-in mx-auto flex w-full max-w-5xl flex-col gap-8 px-4">
+          <div key="dashboard" className="animate-fade-in mx-auto flex w-full max-w-6xl flex-col gap-8 space-y-6">
         <section className="no-print w-full overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-secondary to-highlight-soft p-8 shadow-sm">
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/70 px-4 py-2 text-xl font-semibold text-accent-foreground lg:text-2xl">
             <Activity className="size-3.5" aria-hidden="true" />
