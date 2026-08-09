@@ -731,7 +731,7 @@ function Index() {
 
 
             <div className="space-y-3">
-              <p className="text-xl font-bold text-foreground">Output format</p>
+              <p className="text-2xl font-bold text-foreground lg:text-3xl">Output format</p>
               <div role="group" aria-label="Output format" className="flex flex-wrap gap-2">
                 {formatOptions.map((option) => {
                   const Icon = option.icon;
@@ -758,7 +758,7 @@ function Index() {
 
             <div className="space-y-3">
 
-              <Label htmlFor="concept" className="text-xl font-bold">
+              <Label htmlFor="concept" className="text-2xl font-bold lg:text-3xl">
                 Academic Concept to Learn
               </Label>
               <Textarea
@@ -767,12 +767,12 @@ function Index() {
                 value={rawConcept}
                 onChange={(event) => setRawConcept(event.target.value)}
                 placeholder="e.g., Photosynthesis, Electromagnetism, Cell Division..."
-                className="p-5 text-2xl leading-relaxed"
+                className="p-6 text-2xl leading-relaxed lg:text-3xl"
               />
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="anchor" className="text-xl font-bold">
+              <Label htmlFor="anchor" className="text-2xl font-bold lg:text-3xl">
                 Your Preferred Cognitive Anchor
               </Label>
               <Input
@@ -781,7 +781,7 @@ function Index() {
                 value={anchor}
                 onChange={(event) => setAnchor(event.target.value)}
                 placeholder="e.g., Computer Logic Gates, City Transit Maps, Minecraft Redstone, Music Theory..."
-                className="min-h-16 p-5 text-2xl md:text-2xl"
+                className="min-h-20 p-6 text-2xl md:text-2xl lg:text-3xl"
               />
               <div
                 role="list"
@@ -809,7 +809,7 @@ function Index() {
 
             <Accordion type="single" collapsible className="rounded-xl border border-border">
               <AccordionItem value="sensory" className="border-b-0">
-                <AccordionTrigger className="min-h-11 px-4 text-left text-base font-semibold">
+                <AccordionTrigger className="min-h-14 px-4 text-left text-xl font-bold lg:text-2xl">
                   Sensory &amp; Formatting Options (Optional)
                 </AccordionTrigger>
                 <AccordionContent className="px-4">
@@ -843,7 +843,7 @@ function Index() {
               type="button"
               onClick={generate}
               disabled={loading}
-              className="min-h-14 w-full py-4 text-xl font-bold"
+              className="min-h-16 w-full px-8 py-6 text-2xl font-bold"
             >
               {loading ? (
                 <>
