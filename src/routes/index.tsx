@@ -499,17 +499,15 @@ function Index() {
       return;
     }
 
-    const data: { id?: string; created_at?: string } | null = null;
-
     setSessionFeedback((prev) => [
       {
-        id: (data?.id as string) ?? crypto.randomUUID(),
+        id: crypto.randomUUID(),
         tester_id: feedbackTesterId.trim(),
         tester_email: feedbackEmail.trim(),
         clarity: feedbackClarity,
         friction: feedbackFriction,
         notes: feedbackNotes.trim(),
-        at: (data?.created_at as string) ?? new Date().toISOString(),
+        at: new Date().toISOString(),
       },
       ...prev,
     ]);
