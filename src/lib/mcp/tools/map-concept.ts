@@ -39,11 +39,16 @@ export default defineTool({
     }
 
     const payload = data.data as Record<string, unknown>;
-    const { data: inserted } = await supabase
-      .from("mapping_sessions")
-      .insert({ raw_concept, cognitive_anchor, structured_output: payload })
-      .select("id")
-      .maybeSingle();
+    const { data: inserted } = await supabase.rpc("create_mapping_session", {
+      p_raw_concept: raw_concept,
+      p_cognitive_anchor: cognitive_anchor,
+      p_structured_output: payload,
+    });
+    const row = (Array.isArray(inserted) ? inserted[0] : inserted) as
+      | { id?: string }
+      | null
+      | undefined;
+
 
     return {
       content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],

@@ -24,11 +24,12 @@ export default defineTool({
     const clamp = (value: number) => Math.min(5, Math.max(1, Math.round(value)));
     const supabase = supabaseAnon();
 
-    const { error } = await supabase.from("tester_feedback").insert({
-      tester_type,
-      clarity_rating: clamp(clarity_rating),
-      friction_rating: clamp(friction_rating),
-      notes,
+    const { error } = await supabase.rpc("submit_tester_feedback", {
+      p_session_id: null,
+      p_tester_type: tester_type,
+      p_clarity_rating: clamp(clarity_rating),
+      p_friction_rating: clamp(friction_rating),
+      p_notes: notes,
     });
 
     if (error) throw new ToolError(error.message);
