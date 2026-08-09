@@ -30,22 +30,22 @@ export function AppSidebar({
   return (
     <Sidebar className="no-print no-profile-print">
       <SidebarHeader>
-        <div className="flex items-center gap-3 px-2 py-3">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <Brain className="size-5" aria-hidden="true" />
+        <div className="flex items-center gap-4 px-4 py-5">
+          <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+            <Brain className="size-6" aria-hidden="true" />
           </span>
-          <span className="font-display text-base font-bold tracking-tight text-foreground">
+          <span className="font-display text-xl font-bold tracking-tight text-foreground lg:text-2xl">
             Hyper-Mapper
           </span>
         </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wide">
+          <SidebarGroupLabel className="text-lg font-semibold uppercase tracking-wide lg:text-xl">
             Workspace
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -54,9 +54,9 @@ export function AppSidebar({
                       isActive={activeTab === item.label}
                       onClick={() => onSelectTab(item.label)}
                       aria-current={activeTab === item.label ? "page" : undefined}
-                      className="min-h-11 gap-3 text-sm font-semibold"
+                      className="min-h-14 gap-4 py-3 text-xl font-semibold lg:text-2xl"
                     >
-                      <Icon className="size-4 shrink-0" aria-hidden="true" />
+                      <Icon className="size-6 shrink-0 lg:size-7" aria-hidden="true" />
                       <span>{item.label}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
