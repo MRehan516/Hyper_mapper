@@ -342,8 +342,24 @@ function Index() {
     }
   }
 
+  function clearUploadedFile() {
+    setUploadedFileName(null);
+    setUploadError(null);
+    setDenseText("");
+    setExtractNote(null);
+  }
+
+  function deleteSavedMap(id: string) {
+    setDeck((current) => current.filter((item) => item?._id !== id));
+  }
+
+  function clearAllSavedMaps() {
+    setDeck([]);
+  }
+
   const deckStats = (() => {
     const total = deck.length;
+
     const anchors = deck
       .map((item) => String(item?._cognitive_anchor ?? "").trim())
       .filter(Boolean);
