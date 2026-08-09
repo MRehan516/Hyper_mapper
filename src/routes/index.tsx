@@ -1257,50 +1257,50 @@ function Index() {
             </div>
 
             <section
-              aria-labelledby="pattern-intelligence"
+              aria-labelledby="recent-activity"
               className="rounded-3xl border border-border bg-card p-8 shadow-sm"
             >
               <p className="inline-flex items-center gap-2 rounded-full bg-secondary/60 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-secondary-foreground">
                 <Activity className="size-3.5" aria-hidden="true" />
-                Local pattern intelligence
+                Local activity log
               </p>
               <h3
-                id="pattern-intelligence"
+                id="recent-activity"
                 className="mt-4 font-display text-2xl font-bold text-foreground"
               >
-                Autonomous Behavioral Adaptation
+                Recent activity (this device only)
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Derived locally from your usage patterns. Nothing leaves this device.
+                A plain record of what you mapped. No scores, no ratings, nothing leaves this
+                device.
               </p>
 
-              <div className="mt-6 grid gap-5 sm:grid-cols-3">
-                <div className="rounded-2xl border border-border bg-gradient-to-br from-primary-soft to-card p-6">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
-                    Maps generated
-                  </p>
-                  <p className="mt-2 font-display text-4xl font-bold text-foreground">
-                    {deckStats.total}
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-border bg-gradient-to-br from-highlight-soft to-card p-6">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
-                    Top anchor category
-                  </p>
-                  <p className="mt-2 font-display text-2xl font-bold leading-snug text-foreground">
-                    {deckStats.topCategory}
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-border bg-gradient-to-br from-secondary to-card p-6">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-foreground">
-                    Distinct anchors used
-                  </p>
-                  <p className="mt-2 font-display text-4xl font-bold text-foreground">
-                    {deckStats.distinctAnchors}
-                  </p>
-                </div>
-              </div>
+              {deck.length === 0 ? (
+                <p className="mt-6 rounded-2xl border border-dashed border-border p-6 text-base text-muted-foreground">
+                  No activity yet. Generate a map and it will show up here.
+                </p>
+              ) : (
+                <ul className="mt-6 space-y-3">
+                  {deck.map((saved) => (
+                    <li
+                      key={saved.id ?? saved._saved_at}
+                      className="rounded-2xl border border-border bg-background/60 p-5"
+                    >
+                      <p className="font-display text-lg font-bold leading-snug text-foreground">
+                        {saved._raw_concept || "Saved concept map"}
+                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Anchor: {saved._cognitive_anchor || "—"}
+                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {formatSavedAt(saved._saved_at)}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
+
 
             <Button
               type="button"
